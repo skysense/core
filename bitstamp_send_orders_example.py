@@ -1,4 +1,4 @@
-from bitstampy import api
+from connectivity import api
 from pprint import pprint
 import json
 
