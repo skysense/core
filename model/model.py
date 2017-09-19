@@ -1,6 +1,6 @@
 import abc
 
-import numpy as np
+TIME_HORIZON = 30  # seconds
 
 
 class Model:
@@ -17,4 +17,4 @@ class RandomCoinModel(Model):
         super().__init__()
 
     def call(self, *args, **kwargs):
-        return 0.4
+        return {'buy_confidence': 0.4, 'sell_confidence': 0.6}

@@ -34,7 +34,7 @@ def get_batch(bs, prices, sequence_length):
     return np.expand_dims(batch_x, axis=2), np.expand_dims(batch_t, axis=2), np.expand_dims(batch_y, axis=1)
 
 
-def run_lstm_mnist(lstm_cell, hidden_size, batch_size, steps, log_file=None):
+def run_training(lstm_cell, hidden_size, batch_size, steps, log_file=None):
     if log_file is None:
         log_file = 'log.tsv'
 
@@ -113,7 +113,7 @@ def run_lstm_mnist(lstm_cell, hidden_size, batch_size, steps, log_file=None):
 
 def main():
     model_class, log_file = get_parameters()
-    run_lstm_mnist(lstm_cell=model_class, hidden_size=1024, batch_size=32, steps=10000, log_file=log_file)
+    run_training(lstm_cell=model_class, hidden_size=1024, batch_size=32, steps=10000, log_file=log_file)
 
 
 def get_parameters():

@@ -1,7 +1,10 @@
 import json
+import logging
 
 from connectivity import api
 from connectivity.observable import Observable
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 class BitstampAPI(Observable):
@@ -14,9 +17,9 @@ class BitstampAPI(Observable):
         self.ticker_headers = ['high', 'last', 'timestamp', 'bid', 'vwap', 'volume', 'low', 'ask', 'open']
         self.last_polled_prices = None
 
-        print('CLIENT_ID  (truncated) = {}[...]'.format(self.c[0:3]))
-        print('API_KEY    (truncated) = {}[...]'.format(self.k[0:10]))
-        print('API_SECRET (truncated) = {}[...]'.format(self.s[0:10]))
+        logging.info('CLIENT_ID  (truncated) = {}[...]'.format(self.c[0:3]))
+        logging.info('API_KEY    (truncated) = {}[...]'.format(self.k[0:10]))
+        logging.info('API_SECRET (truncated) = {}[...]'.format(self.s[0:10]))
 
         self.observers = []
 
@@ -35,7 +38,7 @@ class BitstampAPI(Observable):
     def sell_market_order(self, amount):
         return api.sell_market_order(self.c, self.k, self.s, amount)
 
-    def last_transactions(self):
+    def user_transactions(self):
         return api.user_transactions(self.c, self.k, self.s)
 
     @staticmethod

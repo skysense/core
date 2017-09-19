@@ -2,12 +2,16 @@ import copy
 import datetime
 import hashlib
 import hmac
+import logging
 import time
 from decimal import Decimal
+from random import randint
 
 import requests
 
 DEFAULT_CURRENCY_PAIR = 'btceur'
+
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 def dt(timestamp):
@@ -49,12 +53,13 @@ class APICall(object):
         # Form request
         r = None
         url = prefix_url + self.url
+        req_id = randint(0, 1000)
 
         print_params = copy.deepcopy(params)
         if 'key' in print_params:  # private call
             print_params['key'] = '*' * 3
             print_params['signature'] = '*' * 3
-        print('->', url, print_params)
+        logging.info('[{2}] TO BITSTAMP {0} {1}'.format(url, print_params, req_id))
         if self.method == 'get':
             r = requests.get(url, params=params)
         elif self.method == 'post':
@@ -67,6 +72,7 @@ class APICall(object):
         new_response = self._process_response(response)
         if new_response is not None:
             response = new_response
+        logging.info('[{2}] FROM BITSTAMP {0} {1}'.format(url, print_params, req_id))
         return response
 
 
