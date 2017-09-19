@@ -2,24 +2,35 @@ import threading
 
 from connectivity.bitstamp_api import BitstampAPI
 from connectivity.feeds import NewsAPI
+from model.model import RandomCoinModel
+from trader.order_management import OrderManagement
 
 
 class Trading:
     def __init__(self):
+        self.lock = threading.Lock()
+        self.model = RandomCoinModel()
         self.market_api = BitstampAPI()
         self.news_api = NewsAPI()
         self.market_api.register_observer(self)
         self.news_api.register_observer(self)
+        self.oms = OrderManagement(self.market_api)
 
         self.market_api.start()
         self.news_api.start()
-        self.lock = threading.Lock()
 
     def news_notification(self, observable, *args, **kwargs):
         print('Received NEWS message from : ', observable)
+        buy_confidence = self.model.call(args, kwargs)
+        if buy_confidence > 0.5:
+            self.oms.send_buy_order(amount=0.01)
 
     def price_update_notification(self, observable, *args, **kwargs):
         print('Received PRICE UPDATE message from : ', observable)
+        self.model.call(args, kwargs)
+        buy_confidence = self.model.call(args, kwargs)
+        if buy_confidence > 0.5:
+            self.oms.send_buy_order(amount=0.01)
 
     def notify(self, observable, *args, **kwargs):
         self.lock.acquire()

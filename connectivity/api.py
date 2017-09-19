@@ -129,3 +129,15 @@ def withdrawal_requests(client_id, api_key, api_secret):
     return (
         calls.APIWithdrawalRequestsCall(client_id, api_key, api_secret).call(API_URL_V1)
     )
+
+
+def buy_market_order(client_id, api_key, api_secret, amount):
+    return (
+        calls.APIBuyMarketOrderBTCEURCall(client_id, api_key, api_secret).call(API_URL_V2, amount=amount)
+    )
+
+
+def sell_market_order(client_id, api_key, api_secret, amount):
+    return (
+        calls.APISellMarketOrderBTCEURCall(client_id, api_key, api_secret).call(API_URL_V2, amount=amount)
+    )

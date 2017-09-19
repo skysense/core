@@ -27,6 +27,12 @@ class BitstampAPI(Observable):
     def sell_limit_order(self, amount, price):
         return api.sell_limit_order(self.c, self.k, self.s, amount, price)
 
+    def buy_market_order(self, amount):
+        return api.buy_market_order(self.c, self.k, self.s, amount)
+
+    def sell_market_order(self, amount):
+        return api.sell_market_order(self.c, self.k, self.s, amount)
+
     def last_transactions(self):
         return api.user_transactions(self.c, self.k, self.s)
 

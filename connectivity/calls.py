@@ -117,6 +117,8 @@ class APIBitcoinWithdrawalCall(APIPrivateCall):
     url = 'bitcoin_withdrawal/'
 
 
+# **** LIMIT # ****
+
 class APIBuyLimitOrderBTCEURCall(APIPrivateCall):
     url = 'buy/{}/'.format(DEFAULT_CURRENCY_PAIR)
 
@@ -135,6 +137,27 @@ class APIBuyLimitOrderBTCEURCall(APIPrivateCall):
             if '__all__' in reason:
                 reason = reason['__all__'][0]
             raise APIError(reason)
+
+
+class APISellLimitBTCEUROrderCall(APIBuyLimitOrderBTCEURCall):
+    url = 'sell/{}/'.format(DEFAULT_CURRENCY_PAIR)
+
+
+# **** LIMIT # ****
+
+
+# **** MARKET # ****
+
+
+class APIBuyMarketOrderBTCEURCall(APIBuyLimitOrderBTCEURCall):
+    url = 'buy/market/{}/'.format(DEFAULT_CURRENCY_PAIR)
+
+
+class APISellMarketOrderBTCEURCall(APIBuyLimitOrderBTCEURCall):
+    url = 'sell/market/{}/'.format(DEFAULT_CURRENCY_PAIR)
+
+
+# **** MARKET # ****
 
 
 class APICancelOrderCall(APIPrivateCall):
@@ -180,20 +203,6 @@ class APIRippleDepositAddressCall(APIPrivateCall):
 
 class APIRippleWithdrawalCall(APIPrivateCall):
     url = 'ripple_withdrawal/'
-
-
-class APISellLimitBTCEUROrderCall(APIPrivateCall):
-    url = 'sell/{}/'.format(DEFAULT_CURRENCY_PAIR)
-
-    def _process_response(self, response):
-        if 'datetime' in response:
-            response['datetime'] = dt(response['datetime'])
-
-        if 'price' in response:
-            response['price'] = Decimal(response['price'])
-
-        if 'amount' in response:
-            response['amount'] = Decimal(response['amount'])
 
 
 class APITickerCall(APICall):
