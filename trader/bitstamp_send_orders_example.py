@@ -13,9 +13,15 @@ print('CLIENT_ID  (truncated) = {}[...]'.format(c[0:3]))
 print('API_KEY    (truncated) = {}[...]'.format(k[0:10]))
 print('API_SECRET (truncated) = {}[...]'.format(s[0:10]))
 
-pprint(api.buy_limit_order(c, k, s, 0.01, 2000))
+try:
+    pprint(api.buy_limit_order(c, k, s, 0.01, 2000))
+except:
+    pass
 
-# api.cancel_order(c, k, s, '100')
+try:
+    api.cancel_order(c, k, s, '100')
+except:
+    pass
 
 pprint(api.user_transactions(c, k, s))
 

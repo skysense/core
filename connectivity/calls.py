@@ -1,3 +1,4 @@
+import copy
 import datetime
 import hashlib
 import hmac
@@ -48,6 +49,12 @@ class APICall(object):
         # Form request
         r = None
         url = prefix_url + self.url
+
+        print_params = copy.deepcopy(params)
+        if 'key' in print_params:  # private call
+            print_params['key'] = '*' * 3
+            print_params['signature'] = '*' * 3
+        print('->', url, print_params)
         if self.method == 'get':
             r = requests.get(url, params=params)
         elif self.method == 'post':
@@ -123,8 +130,11 @@ class APIBuyLimitOrderBTCEURCall(APIPrivateCall):
         if 'amount' in response:
             response['amount'] = Decimal(response['amount'])
 
-        if 'reason' in response:
-            response['reason'] = response['reason']['__all__'][0]
+        if isinstance(response, dict) and 'status' in response and response['status'] == 'error':
+            reason = response['reason']
+            if '__all__' in reason:
+                reason = reason['__all__'][0]
+            raise APIError(reason)
 
 
 class APICancelOrderCall(APIPrivateCall):
