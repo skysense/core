@@ -19,7 +19,7 @@ class Trading:
         self.oms = OrderManagement(self.market_api, self.throttle)
 
         self.market_api.start()
-        self.news_api.start()
+        # self.news_api.start() - register it later.
 
     def news_notification(self, observable, *args, **kwargs):
         print('Received NEWS message from : ', observable)
@@ -31,14 +31,14 @@ class Trading:
             self.oms.send_sell_order(amount=0.01)
 
     def price_update_notification(self, observable, *args, **kwargs):
-        print('Received PRICE UPDATE message from : ', observable)
+        print('Received PRICE UPDATE message from :', observable, 'with args :', args)
         self.model.call(args, kwargs)
         buy_confidence = self.model.call(args, kwargs)
         # DUMB
-        if buy_confidence > 0.5:
-            self.oms.send_buy_order(amount=0.01)
-        else:
-            self.oms.send_sell_order(amount=0.01)
+        # if buy_confidence > 0.5:
+        #     self.oms.send_buy_order(amount=0.01)
+        # else:
+        #     self.oms.send_sell_order(amount=0.01)
 
     def notify(self, observable, *args, **kwargs):
         self.lock.acquire()
@@ -57,7 +57,7 @@ class Trading:
 
     def run(self):
         self.market_api.join()
-        self.news_api.join()
+        # self.news_api.join()
 
 
 def run():

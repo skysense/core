@@ -11,6 +11,8 @@ class BitstampAPI(Observable):
         self.c = self.credentials['CLIENT_ID']
         self.k = self.credentials['API_KEY']
         self.s = self.credentials['API_SECRET']
+        self.ticker_headers = ['high', 'last', 'timestamp', 'bid', 'vwap', 'volume', 'low', 'ask', 'open']
+        self.last_polled_prices = None
 
         print('CLIENT_ID  (truncated) = {}[...]'.format(self.c[0:3]))
         print('API_KEY    (truncated) = {}[...]'.format(self.k[0:10]))
@@ -46,5 +48,14 @@ class BitstampAPI(Observable):
     def open_orders(self):
         return api.open_orders(self.c, self.k, self.s)
 
+    @staticmethod
+    def compare_ticker_prices(p1, p2):
+        return p1 == p2
+
     def poll(self):
-        return {'key': 'price_update'}
+        prices = api.ticker()
+        if prices != self.last_polled_prices:  # == works even on Decimal.
+            # prices have been updated!
+            self.last_polled_prices = prices
+            return {'key': 'price_update', 'ticker': self.last_polled_prices}
+        return None
