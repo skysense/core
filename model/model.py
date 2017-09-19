@@ -17,4 +17,4 @@ class RandomCoinModel(Model):
         super().__init__()
 
     def call(self, *args, **kwargs):
-        return np.random.rand()
+        return 0.4

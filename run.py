@@ -24,15 +24,21 @@ class Trading:
     def news_notification(self, observable, *args, **kwargs):
         print('Received NEWS message from : ', observable)
         buy_confidence = self.model.call(args, kwargs)
+        # DUMB
         if buy_confidence > 0.5:
             self.oms.send_buy_order(amount=0.01)
+        else:
+            self.oms.send_sell_order(amount=0.01)
 
     def price_update_notification(self, observable, *args, **kwargs):
         print('Received PRICE UPDATE message from : ', observable)
         self.model.call(args, kwargs)
         buy_confidence = self.model.call(args, kwargs)
+        # DUMB
         if buy_confidence > 0.5:
             self.oms.send_buy_order(amount=0.01)
+        else:
+            self.oms.send_sell_order(amount=0.01)
 
     def notify(self, observable, *args, **kwargs):
         self.lock.acquire()
