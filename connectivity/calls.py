@@ -1,11 +1,12 @@
 import datetime
 import hashlib
 import hmac
-import requests
 import time
 from decimal import Decimal
 
-_API_URL = 'https://www.bitstamp.net/api/'
+import requests
+
+DEFAULT_CURRENCY_PAIR = 'btceur'
 
 
 def dt(timestamp):
@@ -43,10 +44,10 @@ class APICall(object):
         """
         return
 
-    def call(self, **params):
+    def call(self, prefix_url, **params):
         # Form request
         r = None
-        url = _API_URL + self.url
+        url = prefix_url + self.url
         if self.method == 'get':
             r = requests.get(url, params=params)
         elif self.method == 'post':
@@ -74,7 +75,7 @@ class APIPrivateCall(APICall):
     def _get_nonce(self):
         return str(int(time.time() * 1e6))
 
-    def call(self, **params):
+    def call(self, prefix_url, **params):
         nonce = self._get_nonce()
         message = nonce + self.client_id + self.api_key
         signature = hmac.new(bytes(self.api_secret.encode('utf8')),
@@ -84,7 +85,7 @@ class APIPrivateCall(APICall):
         params.update({
             'key': self.api_key, 'signature': signature, 'nonce': nonce
         })
-        return super(APIPrivateCall, self).call(**params)
+        return super(APIPrivateCall, self).call(prefix_url, **params)
 
 
 # Specific call classes
@@ -109,25 +110,25 @@ class APIBitcoinWithdrawalCall(APIPrivateCall):
     url = 'bitcoin_withdrawal/'
 
 
-class APIBuyLimitOrderCall(APIPrivateCall):
-    url = 'buy/'
+class APIBuyLimitOrderBTCEURCall(APIPrivateCall):
+    url = 'buy/{}/'.format(DEFAULT_CURRENCY_PAIR)
 
     def _process_response(self, response):
-        response['datetime'] = dt(response['datetime'])
-        response['price'] = Decimal(response['price'])
-        response['amount'] = Decimal(response['amount'])
+        if 'datetime' in response:
+            response['datetime'] = dt(response['datetime'])
+
+        if 'price' in response:
+            response['price'] = Decimal(response['price'])
+
+        if 'amount' in response:
+            response['amount'] = Decimal(response['amount'])
+
+        if 'reason' in response:
+            response['reason'] = response['reason']['__all__'][0]
 
 
 class APICancelOrderCall(APIPrivateCall):
     url = 'cancel_order/'
-
-
-class APICheckBitstampCodeCall(APIPrivateCall):
-    url = 'check_code/'
-
-    def _process_response(self, response):
-        response['usd'] = Decimal(response['usd'])
-        response['btc'] = Decimal(response['btc'])
 
 
 class APIEURUSDConversionRateCall(APICall):
@@ -139,7 +140,7 @@ class APIEURUSDConversionRateCall(APICall):
 
 
 class APIOrderBookCall(APICall):
-    url = 'order_book/'
+    url = 'order_book/{}/'.format(DEFAULT_CURRENCY_PAIR)
 
     def _process_response(self, response):
         response['timestamp'] = dt(response['timestamp'])
@@ -154,21 +155,13 @@ class APIOrderBookCall(APICall):
 
 
 class APIOpenOrdersCall(APIPrivateCall):
-    url = 'open_orders/'
+    url = 'open_orders/all/'
 
     def _process_response(self, response):
         for order in response:
             order['datetime'] = dt(order['datetime'])
             order['price'] = Decimal(order['price'])
             order['amount'] = Decimal(order['amount'])
-
-
-class APIRedeemBitstampCodeCall(APIPrivateCall):
-    url = 'redeem_code/'
-
-    def _process_response(self, response):
-        response['usd'] = Decimal(response['usd'])
-        response['btc'] = Decimal(response['btc'])
 
 
 class APIRippleDepositAddressCall(APIPrivateCall):
@@ -179,17 +172,22 @@ class APIRippleWithdrawalCall(APIPrivateCall):
     url = 'ripple_withdrawal/'
 
 
-class APISellLimitOrderCall(APIPrivateCall):
-    url = 'sell/'
+class APISellLimitBTCEUROrderCall(APIPrivateCall):
+    url = 'sell/{}/'.format(DEFAULT_CURRENCY_PAIR)
 
     def _process_response(self, response):
-        response['datetime'] = dt(response['datetime'])
-        response['price'] = Decimal(response['price'])
-        response['amount'] = Decimal(response['amount'])
+        if 'datetime' in response:
+            response['datetime'] = dt(response['datetime'])
+
+        if 'price' in response:
+            response['price'] = Decimal(response['price'])
+
+        if 'amount' in response:
+            response['amount'] = Decimal(response['amount'])
 
 
 class APITickerCall(APICall):
-    url = 'ticker/'
+    url = 'ticker/{}/'.format(DEFAULT_CURRENCY_PAIR)
 
     def _process_response(self, response):
         response['last'] = Decimal(response['last'])
@@ -202,7 +200,7 @@ class APITickerCall(APICall):
 
 
 class APITransactionsCall(APICall):
-    url = 'transactions/'
+    url = 'transactions/{}/'.format(DEFAULT_CURRENCY_PAIR)
 
     def _process_response(self, response):
         for tx in response:
@@ -220,6 +218,7 @@ class APIUnconfirmedBitcoinDepositsCall(APIPrivateCall):
 
 
 class APIUserTransactionsCall(APIPrivateCall):
+    # Returns transactions for all currency pairs.
     url = 'user_transactions/'
 
     def _process_response(self, response):

@@ -33,108 +33,86 @@ WITHDRAWAL_REQUEST_STATUS_FINISHED = 2
 WITHDRAWAL_REQUEST_STATUS_CANCELLED = 3
 WITHDRAWAL_REQUEST_STATUS_FAILED = 4
 
+API_URL_V1 = 'https://www.bitstamp.net/api/'
+API_URL_V2 = 'https://www.bitstamp.net/api/v2/'
+
 
 # Wrapper functions
+
 def account_balance(client_id, api_key, api_secret):
     return (
-        calls.APIAccountBalanceCall(client_id, api_key, api_secret)
-        .call()
+        calls.APIAccountBalanceCall(client_id, api_key, api_secret).call(API_URL_V2)
     )
 
 
 def bitcoin_deposit_address(client_id, api_key, api_secret):
     return (
-        calls.APIBitcoinDepositAddressCall(client_id, api_key, api_secret)
-        .call()
+        calls.APIBitcoinDepositAddressCall(client_id, api_key, api_secret).call(API_URL_V1)
     )
 
 
 def bitcoin_withdrawal(client_id, api_key, api_secret, amount, address):
     return (
-        calls.APIBitcoinWithdrawalCall(client_id, api_key, api_secret)
-        .call(amount=amount, address=address)
+        calls.APIBitcoinWithdrawalCall(client_id, api_key, api_secret).call(API_URL_V1, amount=amount, address=address)
     )
 
 
 def buy_limit_order(client_id, api_key, api_secret, amount, price):
     return (
-        calls.APIBuyLimitOrderCall(client_id, api_key, api_secret)
-        .call(amount=amount, price=price)
+        calls.APIBuyLimitOrderBTCEURCall(client_id, api_key, api_secret).call(API_URL_V2, amount=amount, price=price)
     )
 
 
 def cancel_order(client_id, api_key, api_secret, order_id):
     return (
-        calls.APICancelOrderCall(client_id, api_key, api_secret)
-        .call(id=order_id)
-    )
-
-
-def check_bitstamp_code(client_id, api_key, api_secret, code):
-    return (
-        calls.APICheckBitstampCodeCall(client_id, api_key, api_secret)
-        .call(code=code)
+        calls.APICancelOrderCall(client_id, api_key, api_secret).call(API_URL_V2, id=order_id)
     )
 
 
 def eur_usd_conversion_rate():
-    return calls.APIEURUSDConversionRateCall().call()
+    return calls.APIEURUSDConversionRateCall().call(API_URL_V1)
 
 
 def open_orders(client_id, api_key, api_secret):
     return (
-        calls.APIOpenOrdersCall(client_id, api_key, api_secret)
-        .call()
+        calls.APIOpenOrdersCall(client_id, api_key, api_secret).call(API_URL_V2)
     )
 
 
 def order_book(group=True):
-    return calls.APIOrderBookCall().call(group='1' if group else '0')
-
-
-def redeem_bitstamp_code(client_id, api_key, api_secret, code):
-    return (
-        calls.APIRedeemBitstampCodeCall(client_id, api_key, api_secret)
-        .call(code=code)
-    )
+    return calls.APIOrderBookCall().call(API_URL_V2, group='1' if group else '0')
 
 
 def ripple_deposit_address(client_id, api_key, api_secret):
     return (
-        calls.APIRippleDepositAddressCall(client_id, api_key, api_secret)
-        .call()
+        calls.APIRippleDepositAddressCall(client_id, api_key, api_secret).call(API_URL_V1)
     )
 
 
 def ripple_withdrawal(
         client_id, api_key, api_secret, amount, address, currency):
     return (
-        calls.APIRippleWithdrawalCall(client_id, api_key, api_secret)
-        .call()
+        calls.APIRippleWithdrawalCall(client_id, api_key, api_secret).call(API_URL_V1)
     )
 
 
 def sell_limit_order(client_id, api_key, api_secret, amount, price):
     return (
-        calls.APISellLimitOrderCall(client_id, api_key, api_secret)
-        .call(amount=amount, price=price)
+        calls.APISellLimitBTCEUROrderCall(client_id, api_key, api_secret).call(API_URL_V2, amount=amount, price=price)
     )
 
 
 def ticker():
-    return calls.APITickerCall().call()
+    return calls.APITickerCall().call(API_URL_V2)
 
 
 def transactions(offset=0, limit=100, sort=TRANSACTIONS_SORT_DESCENDING):
-    return calls.APITransactionsCall().call(
-        offset=offset, limit=limit, sort=sort
-    )
+    return calls.APITransactionsCall().call(API_URL_V2, offset=offset, limit=limit, sort=sort)
 
 
 def unconfirmed_bitcoin_deposits(client_id, api_key, api_secret):
     return (
-        calls.APIUnconfirmedBitcoinDepositsCall(client_id, api_key, api_secret)
-        .call()
+        calls.APIUnconfirmedBitcoinDepositsCall(client_id, api_key, api_secret).call(API_URL_V1)
     )
 
 
@@ -142,13 +120,12 @@ def user_transactions(
         client_id, api_key, api_secret, offset=0, limit=100,
         sort=USER_TRANSACTIONS_SORT_DESCENDING):
     return (
-        calls.APIUserTransactionsCall(client_id, api_key, api_secret)
-        .call(offset=offset, limit=limit, sort=sort)
+        calls.APIUserTransactionsCall(client_id, api_key, api_secret).call(API_URL_V2, offset=offset, limit=limit,
+                                                                           sort=sort)
     )
 
 
 def withdrawal_requests(client_id, api_key, api_secret):
     return (
-        calls.APIWithdrawalRequestsCall(client_id, api_key, api_secret)
-        .call()
+        calls.APIWithdrawalRequestsCall(client_id, api_key, api_secret).call(API_URL_V1)
     )

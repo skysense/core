@@ -3,7 +3,7 @@ import json
 from connectivity import api
 
 
-class BitstampAPIv1:
+class BitstampAPI:
     def __init__(self):
         self.credentials = json.load(open('credentials.json', 'r'))
         self.c = self.credentials['CLIENT_ID']
