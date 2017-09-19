@@ -2,9 +2,9 @@ import threading
 
 from connectivity.bitstamp_api import BitstampAPI
 from connectivity.feeds import NewsAPI
+from connectivity.throttling import Throttling
 from model.model import RandomCoinModel
 from trader.order_management import OrderManagement
-from connectivity.throttling import Throttling
 
 
 class Trading:
