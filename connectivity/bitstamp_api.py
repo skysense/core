@@ -1,4 +1,6 @@
 import json
+import threading
+from time import sleep
 
 from connectivity import api
 from connectivity.observable import Observable
@@ -11,6 +13,8 @@ class BitstampAPI(Observable):
         self.c = self.credentials['CLIENT_ID']
         self.k = self.credentials['API_KEY']
         self.s = self.credentials['API_SECRET']
+        self.thread = threading.Thread(target=self._run)
+        self.polling_interval = 2  # in seconds
 
         print('CLIENT_ID  (truncated) = {}[...]'.format(self.c[0:3]))
         print('API_KEY    (truncated) = {}[...]'.format(self.k[0:10]))
@@ -46,3 +50,12 @@ class BitstampAPI(Observable):
     def notify_observers(self, *args, **kwargs):
         for observer in self.observers:
             observer.notify(self, *args, **kwargs)
+
+    def start(self):
+        self.thread.daemon = True
+        self.thread.start()
+
+    def _run(self):
+        while True:
+            self.notify_observers('test')
+            sleep(self.polling_interval)
