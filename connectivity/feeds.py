@@ -18,4 +18,4 @@ class NewsAPI(Observable):
                 print("[" + post.updated + "] " + post.title + " <" + post.link + ">")
 
     def poll(self):
-        return 'test_poll_news'
+        return {'key': 'news'}

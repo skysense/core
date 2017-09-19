@@ -1,3 +1,5 @@
+import threading
+
 from connectivity.bitstamp_api import BitstampAPI
 from connectivity.feeds import NewsAPI
 
@@ -11,9 +13,28 @@ class Trading:
 
         self.market_api.start()
         self.news_api.start()
+        self.lock = threading.Lock()
+
+    def news_notification(self, observable, *args, **kwargs):
+        print('Received NEWS message from : ', observable)
+
+    def price_update_notification(self, observable, *args, **kwargs):
+        print('Received PRICE UPDATE message from : ', observable)
 
     def notify(self, observable, *args, **kwargs):
-        print('Got', args, kwargs, 'From', observable)
+        self.lock.acquire()
+        try:
+            notification_type = args[0]['key']
+            if notification_type == 'news':
+                self.news_notification(observable, args, kwargs)
+            elif notification_type == 'price_update':
+                self.price_update_notification(observable, args, kwargs)
+            else:
+                raise Exception('Unknown type : {}'.format(notification_type))
+        except Exception as e:
+            raise e
+        finally:
+            self.lock.release()
 
     def run(self):
         self.market_api.join()

@@ -41,4 +41,4 @@ class BitstampAPI(Observable):
         return api.open_orders(self.c, self.k, self.s)
 
     def poll(self):
-        return 't22est'
+        return {'key': 'price_update'}
