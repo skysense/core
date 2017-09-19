@@ -1,5 +1,3 @@
-from time import sleep
-
 from connectivity.bitstamp_api import BitstampAPI
 from connectivity.feeds import NewsAPI
 
@@ -18,10 +16,8 @@ class Trading:
         print('Got', args, kwargs, 'From', observable)
 
     def run(self):
-        while True:
-            # self.market_api.notify_observers('test')
-            self.news_api.notify_observers('test')
-            sleep(1)
+        self.market_api.join()
+        self.news_api.join()
 
 
 def run():
