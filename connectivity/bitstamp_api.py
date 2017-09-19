@@ -1,11 +1,13 @@
 import json
 
 from connectivity import api
+from connectivity.observable import Observable
 
 
-class BitstampAPI:
+class BitstampAPI(Observable):
     def __init__(self):
-        self.credentials = json.load(open('credentials.json', 'r'))
+        super().__init__()
+        self.credentials = json.load(open('../credentials.json', 'r'))
         self.c = self.credentials['CLIENT_ID']
         self.k = self.credentials['API_KEY']
         self.s = self.credentials['API_SECRET']
@@ -13,6 +15,8 @@ class BitstampAPI:
         print('CLIENT_ID  (truncated) = {}[...]'.format(self.c[0:3]))
         print('API_KEY    (truncated) = {}[...]'.format(self.k[0:10]))
         print('API_SECRET (truncated) = {}[...]'.format(self.s[0:10]))
+
+        self.observers = []
 
     def buy_limit_order(self, amount, price):
         return api.buy_limit_order(self.c, self.k, self.s, amount, price)
@@ -35,3 +39,10 @@ class BitstampAPI:
 
     def open_orders(self):
         return api.open_orders(self.c, self.k, self.s)
+
+    def register_observer(self, observer):
+        self.observers.append(observer)
+
+    def notify_observers(self, *args, **kwargs):
+        for observer in self.observers:
+            observer.notify(self, *args, **kwargs)
