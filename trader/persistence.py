@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+from datetime import datetime
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -29,8 +30,11 @@ class Persistence:
         persisted_orders = self.enrich_persisted_orders_with_market_statuses(self.read_from_persistence())
         order = {'amount': amount,
                  'price': price,
-                 'way': way}
-        logging.info('About to persist order = {0} with ID = {1}'.format(order, order_id))
+                 'way': way,
+                 'id': order_id,
+                 'status': self.bitstamp_api.order_status(order_id),
+                 'timestamp': str(datetime.now())}
+        logging.info('About to persist order = {0} with ID = {1}.'.format(order, order_id))
         if order_id in persisted_orders:
             raise Exception('Order ID conflict for {0}.'.format(order_id))
         if not (way == 'buy' or way == 'sell'):
