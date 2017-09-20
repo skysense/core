@@ -1,7 +1,7 @@
 MAX_NUMBER_OF_OUTSTANDING_ORDERS_ALLOWED = 1
 
 
-class OrderManagement:
+class OrderManager:
     def __init__(self, bitstamp_api, throttle, persistence):
         self.bitstamp_api = bitstamp_api
         self.throttle = throttle
@@ -23,7 +23,7 @@ class OrderManagement:
         # Will be slow once the persistence is big.
         orders = self.persistence.enrich_persisted_orders_with_market_statuses(self.persistence.read_from_persistence())
 
-        num_open_orders = OrderManagement.check_outstanding_orders(orders)
+        num_open_orders = OrderManager.check_outstanding_orders(orders)
         if num_open_orders > MAX_NUMBER_OF_OUTSTANDING_ORDERS_ALLOWED:
             raise Exception('Limit of open orders exceeded. Cannot open more orders.')
 

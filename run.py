@@ -6,7 +6,7 @@ from connectivity.feeds import NewsAPI
 from connectivity.throttling import Throttling
 from model.model import RandomCoinModel
 from model.model_action_taker import ModelActionTaker
-from trader.order_management import OrderManagement
+from trader.order_management import OrderManager
 from trader.persistence import Persistence
 from trader.unwind_management import UnwindManager
 
@@ -25,7 +25,7 @@ class Trading:
         self.throttle = Throttling()
         self.unwind_manager = UnwindManager(self.market_api, self.persistence)
         self.persistence = Persistence(self.market_api)
-        self.oms = OrderManagement(self.market_api, self.throttle, self.persistence)
+        self.oms = OrderManager(self.market_api, self.throttle, self.persistence)
         self.model_action_taker = ModelActionTaker(self.oms)
 
         self.market_api.start()
