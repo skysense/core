@@ -12,13 +12,14 @@ from trader.order_management import OrderManager
 from trader.persistence import Persistence
 from trader.unwind_management import UnwindManager
 
-PROD_FLAG = False
+print('Program has started.')
 
-print('Program has started. Check the log file trading_*.log if nothing is displayed in the console.')
+PROD_FLAG = False
 
 LOG_FORMAT = '%(asctime)s - %(name)15s - %(levelname)s - %(message)s'
 
 if PROD_FLAG:
+    print('Check the log file trading_*.log if nothing is displayed in the console.')
     logging.basicConfig(level=logging.INFO,
                         format=LOG_FORMAT,
                         filename='trading_{}.log'.format(datetime.now()))
