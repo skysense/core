@@ -27,6 +27,9 @@ class BitstampAPI(Observable):
     def api_cancel_order(self, order_id):
         return api.cancel_order(self.c, self.k, self.s, order_id)
 
+    def order_status(self, order_id):
+        return api.order_status(self.c, self.k, self.s, order_id)
+
     def sell_limit_order(self, amount, price):
         return api.sell_limit_order(self.c, self.k, self.s, amount, price)
 

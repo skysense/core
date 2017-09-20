@@ -170,6 +170,10 @@ class APICancelOrderCall(APIPrivateCall):
     url = 'cancel_order/'
 
 
+class APIOrderStatusCall(APIPrivateCall):
+    url = 'order_status/'
+
+
 class APIEURUSDConversionRateCall(APICall):
     url = 'eur_usd/'
 

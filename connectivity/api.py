@@ -69,6 +69,12 @@ def cancel_order(client_id, api_key, api_secret, order_id):
     )
 
 
+def order_status(client_id, api_key, api_secret, order_id):
+    return (
+        calls.APIOrderStatusCall(client_id, api_key, api_secret).call(API_URL_V1, id=order_id)
+    )
+
+
 def eur_usd_conversion_rate():
     return calls.APIEURUSDConversionRateCall().call(API_URL_V1)
 

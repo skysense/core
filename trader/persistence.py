@@ -6,8 +6,9 @@ logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(
 
 
 class Persistence:
-    def __init__(self):
+    def __init__(self, bitstamp_api=None):
         self.filename = '../persisted_orders.json'
+        self.bitstamp_api = bitstamp_api
 
     def read_from_persistence(self):
         if not os.path.isfile(self.filename):
@@ -16,8 +17,16 @@ class Persistence:
             with open(self.filename, 'r') as fp:
                 return json.load(fp)
 
+    def enrich_persisted_orders_with_market_statuses(self, persisted_orders):
+        if self.bitstamp_api is None:
+            return persisted_orders
+        for order_id in sorted(persisted_orders.keys()):
+            status = self.bitstamp_api.order_status(order_id)
+            persisted_orders[order_id]['status'] = status
+        return persisted_orders
+
     def persist(self, order_id, amount, price, way):
-        persisted_orders = self.read_from_persistence()
+        persisted_orders = self.enrich_persisted_orders_with_market_statuses(self.read_from_persistence())
         order = {'amount': amount,
                  'price': price,
                  'way': way}
@@ -31,7 +40,7 @@ class Persistence:
             json.dump(persisted_orders, fp, ensure_ascii=True, indent=4)
 
     def request_order_from_persistence(self, order_id):
-        persisted_orders = self.read_from_persistence()
+        persisted_orders = self.enrich_persisted_orders_with_market_statuses(self.read_from_persistence())
         if order_id not in persisted_orders:
             raise Exception('Could not find Order ID {0} in the persistence.'.format(order_id))
         return persisted_orders[order_id]

@@ -7,6 +7,7 @@ from connectivity.throttling import Throttling
 from model.model import RandomCoinModel
 from model.model_action_taker import ModelActionTaker
 from trader.order_management import OrderManagement
+from trader.persistence import Persistence
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -21,7 +22,8 @@ class Trading:
         self.market_api.register_observer(self)
         self.news_api.register_observer(self)
         self.throttle = Throttling()
-        self.oms = OrderManagement(self.market_api, self.throttle)
+        self.persistence = Persistence(self.market_api)
+        self.oms = OrderManagement(self.market_api, self.throttle, self.persistence)
         self.model_action_taker = ModelActionTaker(self.oms)
 
         self.market_api.start()
