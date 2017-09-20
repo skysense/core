@@ -21,8 +21,6 @@ class BitstampAPI(Observable):
         logging.info('API_KEY    (truncated) = {}[...]'.format(self.k[0:10]))
         logging.info('API_SECRET (truncated) = {}[...]'.format(self.s[0:10]))
 
-        self.observers = []
-
     def buy_limit_order(self, amount, price):
         return api.buy_limit_order(self.c, self.k, self.s, amount, price)
 
