@@ -1,8 +1,8 @@
 class OrderManagement:
-    def __init__(self, bitstamp_api, throttle):
+    def __init__(self, bitstamp_api, throttle, persistence):
         self.bitstamp_api = bitstamp_api
         self.throttle = throttle
-        self.open_orders = []
+        self.persistence = persistence
 
     def send_buy_order(self, amount, price=None):
 
@@ -12,8 +12,7 @@ class OrderManagement:
             response = self.bitstamp_api.buy_market_order(amount)
         else:
             response = self.bitstamp_api.buy_limit_order(amount, price)
-        self.open_orders.append(response)
-        # do something here.
+            # do something here.
 
     def send_sell_order(self, amount, price=None):
 
@@ -23,5 +22,4 @@ class OrderManagement:
             response = self.bitstamp_api.sell_market_order(amount)
         else:
             response = self.bitstamp_api.sell_limit_order(amount, price)
-        self.open_orders.append(response)
-        # do something here.
+            # do something here.
