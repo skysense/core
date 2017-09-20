@@ -1,5 +1,6 @@
-import requests
 import json
+
+import requests
 
 # while true;
 # do wget https://www.bitstamp.net/api/order_book -O out/$(date -d "today" +"%Y%m%d-%H%M%S").json;
