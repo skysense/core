@@ -8,6 +8,7 @@ from model.model import RandomCoinModel
 from model.model_action_taker import ModelActionTaker
 from trader.order_management import OrderManagement
 from trader.persistence import Persistence
+from trader.unwind_management import UnwindManager
 
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
@@ -22,11 +23,13 @@ class Trading:
         self.market_api.register_observer(self)
         self.news_api.register_observer(self)
         self.throttle = Throttling()
+        self.unwind_manager = UnwindManager(self.market_api, self.persistence)
         self.persistence = Persistence(self.market_api)
         self.oms = OrderManagement(self.market_api, self.throttle, self.persistence)
         self.model_action_taker = ModelActionTaker(self.oms)
 
         self.market_api.start()
+        self.unwind_manager.start()
         # self.news_api.start() - register it later.
 
     def news_notification(self, observable, *args, **kwargs):

@@ -31,15 +31,7 @@ class OrderManagement:
             response = self.bitstamp_api.buy_market_order(amount)
         else:
             response = self.bitstamp_api.buy_limit_order(amount, price)
-
         return response
 
     def send_sell_order(self, amount, price=None):
-
-        self.throttle.check_validity()  # will throw an exception if invalid.
-
-        if price is None:
-            response = self.bitstamp_api.sell_market_order(amount)
-        else:
-            response = self.bitstamp_api.sell_limit_order(amount, price)
-            # do something here.
+        raise Exception('Not used now. We only send buy orders and we have a mechanism to unwind them.')
