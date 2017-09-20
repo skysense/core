@@ -3,10 +3,15 @@ import threading
 from time import sleep
 
 
-class Observable:
-    def __init__(self):
+class SingletonObservable:
+    def __init__(self, clazz):
+        if clazz._instance is not None:
+            raise Exception('Singleton error. More than one instance was registered for {0}'.format(self))
+        clazz._instance = self
+
         self.__observers = []
-        self.thread = threading.Thread(target=self.run)
+        clazz_name = str(clazz._instance).split('.')[-1].split(' ')[0]  # inspection
+        self.thread = threading.Thread(target=self.run, name=clazz_name)
         self.polling_interval = 2  # in seconds
 
     def register_observer(self, observer):

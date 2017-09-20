@@ -10,7 +10,7 @@ from trader.order_management import OrderManager
 from trader.persistence import Persistence
 from trader.unwind_management import UnwindManager
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(threadName)20s - %(levelname)s - %(message)s')
 
 
 class Trading:
@@ -23,8 +23,8 @@ class Trading:
         self.market_api.register_observer(self)
         self.news_api.register_observer(self)
         self.throttle = Throttling()
-        self.unwind_manager = UnwindManager(self.market_api, self.persistence)
         self.persistence = Persistence(self.market_api)
+        self.unwind_manager = UnwindManager(self.market_api, self.persistence)
         self.oms = OrderManager(self.market_api, self.throttle, self.persistence)
         self.model_action_taker = ModelActionTaker(self.oms)
 

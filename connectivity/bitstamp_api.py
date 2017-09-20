@@ -2,14 +2,16 @@ import json
 import logging
 
 from connectivity import api
-from connectivity.observable import Observable
+from connectivity.singleton_observable import SingletonObservable
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(threadName)20s - %(levelname)s - %(message)s')
 
 
-class BitstampAPI(Observable):
+class BitstampAPI(SingletonObservable):
+    _instance = None
+
     def __init__(self):
-        super().__init__()
+        super().__init__(BitstampAPI)
         self.credentials = json.load(open('../credentials.json', 'r'))
         self.c = self.credentials['CLIENT_ID']
         self.k = self.credentials['API_KEY']

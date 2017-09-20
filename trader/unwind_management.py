@@ -1,15 +1,17 @@
 import logging
 from datetime import datetime
 
-from connectivity.observable import Observable
+from connectivity.singleton_observable import SingletonObservable
 from model.model import TIME_HORIZON
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(threadName)20s - %(levelname)s - %(message)s')
 
 
-class UnwindManager(Observable):
+class UnwindManager(SingletonObservable):
+    _instance = None
+
     def __init__(self, bitstamp_api, persistence):
-        super().__init__()
+        super().__init__(UnwindManager)
         self.bitstamp_api = bitstamp_api
         self.persistence = persistence
         self.polling_interval = 15  # In seconds. This API call is cached for 10 seconds.

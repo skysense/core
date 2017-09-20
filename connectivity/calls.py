@@ -11,7 +11,7 @@ import requests
 
 DEFAULT_CURRENCY_PAIR = 'btceur'
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(threadName)20s - %(levelname)s - %(message)s')
 
 
 def dt(timestamp):
@@ -59,12 +59,15 @@ class APICall(object):
         if 'key' in print_params:  # private call
             print_params['key'] = '*' * 3
             print_params['signature'] = '*' * 3
-        logging.info('[{2}] TO BITSTAMP {0} {1}'.format(url, print_params, req_id))
+        logging.info('[{2}] TO BITSTAMP : {0} {1}'.format(url, print_params, req_id))
         if self.method == 'get':
             r = requests.get(url, params=params)
         elif self.method == 'post':
             r = requests.post(url, data=params)
         response = r.json()
+
+        logging.info('[{1}] FROM BITSTAMP : {0}'.format(response, req_id))
+
         # API error?
         if isinstance(response, dict) and 'error' in response:
             raise APIError(response['error'])
@@ -72,7 +75,6 @@ class APICall(object):
         new_response = self._process_response(response)
         if new_response is not None:
             response = new_response
-        logging.info('[{2}] FROM BITSTAMP {0} {1}'.format(url, print_params, req_id))
         return response
 
 

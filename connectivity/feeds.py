@@ -1,11 +1,16 @@
 import feedparser
 
-from connectivity.observable import Observable
+from connectivity.singleton_observable import SingletonObservable
 
 rss_feeds = open('../connectivity/feeds.txt').readlines()
 
 
-class NewsAPI(Observable):
+class NewsAPI(SingletonObservable):
+    _instance = None
+
+    def __init__(self):
+        super().__init__(NewsAPI)
+
     def run_news(self):
         for rss_feed in rss_feeds:
 
