@@ -3,17 +3,18 @@ import logging
 import os
 from datetime import datetime
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(threadName)20s - %(levelname)s - %(message)s')
-
 
 class Persistence:
     def __init__(self, bitstamp_api=None):
         self.filename = '../persisted_orders.json'
         self.bitstamp_api = bitstamp_api
+        self.logger = logging.getLogger('Persistence')
 
     def read_from_persistence(self):
         if not os.path.isfile(self.filename):
-            return {}
+            return {}  # non existing file.
+        if os.stat(self.filename).st_size == 0:
+            return {}  # empty file.
         else:
             with open(self.filename, 'r') as fp:
                 return json.load(fp)
@@ -34,7 +35,7 @@ class Persistence:
                  'id': order_id,
                  'status': self.bitstamp_api.order_status(order_id),
                  'timestamp': str(datetime.now())}
-        logging.info('About to persist order = {0} with ID = {1}.'.format(order, order_id))
+        self.logger.info('About to persist order = {0} with ID = {1}.'.format(order, order_id))
         if order_id in persisted_orders:
             raise Exception('Order ID conflict for {0}.'.format(order_id))
         if not (way == 'buy' or way == 'sell'):
@@ -56,9 +57,9 @@ if __name__ == '__main__':
 
     market_api = BitstampAPI()
     persistence = Persistence(market_api)
-    logging.info(persistence.request_order_from_persistence('OS125'))
 
     persistence.persist(str(uuid4()), 1, 10, 'buy')
     persistence.persist(str(uuid4()), 3, 20, 'buy')
     persistence.persist(str(uuid4()), 2, 30, 'sell')
     persistence.request_order_from_persistence('OS123')
+    print(persistence.request_order_from_persistence('OS125'))

@@ -1,5 +1,6 @@
 import logging
 import threading
+from datetime import datetime
 from time import sleep
 
 from connectivity.bitstamp_api import BitstampAPI
@@ -11,11 +12,24 @@ from trader.order_management import OrderManager
 from trader.persistence import Persistence
 from trader.unwind_management import UnwindManager
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(threadName)20s - %(levelname)s - %(message)s')
+PROD_FLAG = False
+
+print('Program has started. Check the log file trading_*.log if nothing is displayed in the console.')
+
+LOG_FORMAT = '%(asctime)s - %(name)15s - %(levelname)s - %(message)s'
+
+if PROD_FLAG:
+    logging.basicConfig(level=logging.INFO,
+                        format=LOG_FORMAT,
+                        filename='trading_{}.log'.format(datetime.now()))
+else:
+    logging.basicConfig(level=logging.INFO,
+                        format=LOG_FORMAT)
 
 
 class Trading:
     def __init__(self):
+        self.logger = logging.getLogger('MainThread')
         self.lock = threading.Lock()
         self.model_prices = RandomCoinModel()
         self.model_news = RandomCoinModel()
@@ -34,15 +48,15 @@ class Trading:
         # self.news_api.start() - register it later.
 
     def news_notification(self, observable, *args, **kwargs):
-        logging.info('Received NEWS message from : {0}'.format(observable))
+        self.logger.info('Received NEWS message from : {0}'.format(observable))
         model_output = self.model_news.call(args, kwargs)
-        logging.info('New model output on new data : {0}'.format(model_output))
+        self.logger.info('New model output on new data : {0}'.format(model_output))
         self.model_action_taker.take_trading_action(model_output)
 
     def price_update_notification(self, observable, *args, **kwargs):
-        logging.info('Received PRICE UPDATE message from : {0} with args: {1}'.format(observable, args))
+        self.logger.info('Received PRICE UPDATE message from : {0} with args: {1}'.format(observable, args))
         model_output = self.model_prices.call(args, kwargs)
-        logging.info('Prices model output on new data : {0}'.format(model_output))
+        self.logger.info('Prices model output on new data : {0}'.format(model_output))
         self.model_action_taker.take_trading_action(model_output)
 
     def notify(self, observable, *args, **kwargs):
@@ -62,11 +76,16 @@ class Trading:
 
     def run(self):
         threads = [self.market_api, self.unwind_manager]
-        while True:
-            for thread in threads:
-                if not thread.is_alive():
-                    logging.error('{0} is dead. Program will exit.'.format(self.market_api))
-                    exit(1)
+        stop_main = False
+        while not stop_main:
+            for t in threads:
+                if not t.is_alive():
+                    self.logger.error('{0} is dead. Program will exit.'.format(t))
+                    for t2 in threads:
+                        t2.terminate()
+                        t2.join()
+                    stop_main = True
+
             sleep(0.1)
 
             # self.market_api.join()

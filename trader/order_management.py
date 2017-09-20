@@ -31,6 +31,8 @@ class OrderManager:
             response = self.bitstamp_api.buy_market_order(amount)
         else:
             response = self.bitstamp_api.buy_limit_order(amount, price)
+        order_id = response['id']
+        self.persistence.persist(order_id, amount, price, 'buy')
         return response
 
     def send_sell_order(self, amount, price=None):

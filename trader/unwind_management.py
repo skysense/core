@@ -1,10 +1,7 @@
-import logging
 from datetime import datetime
 
 from connectivity.singleton_observable import SingletonObservable
 from model.model import TIME_HORIZON
-
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(threadName)20s - %(levelname)s - %(message)s')
 
 
 class UnwindManager(SingletonObservable):
@@ -27,7 +24,17 @@ class UnwindManager(SingletonObservable):
             if order['status']['market trade'] == 'market trade' and order['status']['status'] == 'Finished':
                 ts = datetime.strptime(order['timestamp'], '%Y-%m-%d %H:%M:%S.%f')
                 if ts + TIME_HORIZON > datetime.now():
-                    logging.info(
+                    self.logger.info(
                         'Outstanding order initiated at {0} with Order ID = {1}. '
                         'Will going to close it. Full order is = {2}'.format(ts, order['id'], order))
                     self.bitstamp_api.sell_market_order(order['amount'])
+
+    def terminate(self):
+        super().terminate()
+        # orders = self.persistence.enrich_persisted_orders_with_market_statuses(
+        #    self.persistence.read_from_persistence())
+
+        # mass cancel
+        self.logger.info('{0} received a termination call. Will mass cancel all the opened orders.'.format(str(self)))
+        self.logger.error('TODO!')
+        self.logger.info('Going to shutdown.')

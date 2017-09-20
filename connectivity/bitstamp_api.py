@@ -4,14 +4,13 @@ import logging
 from connectivity import api
 from connectivity.singleton_observable import SingletonObservable
 
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(threadName)20s - %(levelname)s - %(message)s')
-
 
 class BitstampAPI(SingletonObservable):
     _instance = None
 
     def __init__(self):
         super().__init__(BitstampAPI)
+        self.logger = logging.getLogger('BitstampAPI')
         self.credentials = json.load(open('../credentials.json', 'r'))
         self.c = self.credentials['CLIENT_ID']
         self.k = self.credentials['API_KEY']
@@ -19,9 +18,9 @@ class BitstampAPI(SingletonObservable):
         self.ticker_headers = ['high', 'last', 'timestamp', 'bid', 'vwap', 'volume', 'low', 'ask', 'open']
         self.last_polled_prices = None
 
-        logging.info('CLIENT_ID  (truncated) = {}[...]'.format(self.c[0:3]))
-        logging.info('API_KEY    (truncated) = {}[...]'.format(self.k[0:10]))
-        logging.info('API_SECRET (truncated) = {}[...]'.format(self.s[0:10]))
+        self.logger.info('CLIENT_ID  (truncated) = {}[...]'.format(self.c[0:3]))
+        self.logger.info('API_KEY    (truncated) = {}[...]'.format(self.k[0:10]))
+        self.logger.info('API_SECRET (truncated) = {}[...]'.format(self.s[0:10]))
 
     def buy_limit_order(self, amount, price):
         return api.buy_limit_order(self.c, self.k, self.s, amount, price)
