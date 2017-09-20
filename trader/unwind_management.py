@@ -39,8 +39,3 @@ class UnwindManager(Observable):
             if execution['datetime'] + self.trading_time_horizon > datetime.now():
                 # for now unwinding is reserved to buy orders.
                 self.bitstamp_api.sell_market_order()
-
-    # order id comes from the id when placing a market/limit order.
-
-    def add_order_to_unwind(self, order_id, unwind_datetime):
-        self.orders_to_unwind[order_id] = unwind_datetime
