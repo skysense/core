@@ -12,7 +12,10 @@ class SingletonObservable:
         self.__observers = []
         clazz_name = str(clazz._instance).split('.')[-1].split(' ')[0]  # inspection
         self.thread = threading.Thread(target=self.run, name=clazz_name)
-        self.polling_interval = 2  # in seconds
+        self.polling_interval = 5  # in seconds
+
+    def is_alive(self):
+        return self.thread.is_alive()
 
     def register_observer(self, observer):
         self.__observers.append(observer)

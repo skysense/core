@@ -53,7 +53,7 @@ class APICall(object):
         # Form request
         r = None
         url = prefix_url + self.url
-        req_id = randint(0, 1000)
+        req_id = randint(0, 10000)
 
         print_params = copy.deepcopy(params)
         if 'key' in print_params:  # private call

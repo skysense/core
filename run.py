@@ -1,5 +1,6 @@
 import logging
 import threading
+from time import sleep
 
 from connectivity.bitstamp_api import BitstampAPI
 from connectivity.feeds import NewsAPI
@@ -60,8 +61,21 @@ class Trading:
             self.lock.release()
 
     def run(self):
-        self.market_api.join()
-        # self.news_api.join()
+        threads = [self.market_api, self.unwind_manager]
+        while True:
+            for thread in threads:
+                if not thread.is_alive():
+                    logging.error('{0} is dead. Program will exit.'.format(self.market_api))
+                    exit(1)
+            sleep(0.1)
+
+            # self.market_api.join()
+            # logging.info('market_api dead')
+
+            # self.unwind_manager.join()
+            # logging.info('unwind dead')
+
+            # self.news_api.join()
 
 
 def run():
