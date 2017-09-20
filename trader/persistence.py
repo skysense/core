@@ -47,8 +47,14 @@ class Persistence:
 
 
 if __name__ == '__main__':
-    persistence = Persistence()
+    from connectivity.bitstamp_api import BitstampAPI
+    from uuid import uuid4
+
+    market_api = BitstampAPI()
+    persistence = Persistence(market_api)
     logging.info(persistence.request_order_from_persistence('OS125'))
-    persistence.persist('OS124', 1, 10, 'buy')
-    persistence.persist('OS125', 3, 20, 'buy')
-    persistence.persist('OS126', 2, 30, 'sell')
+
+    persistence.persist(str(uuid4()), 1, 10, 'buy')
+    persistence.persist(str(uuid4()), 3, 20, 'buy')
+    persistence.persist(str(uuid4()), 2, 30, 'sell')
+    persistence.request_order_from_persistence('OS123')
