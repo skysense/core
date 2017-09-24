@@ -25,7 +25,7 @@ class BitstampAPI(SingletonObservable):
     def buy_limit_order(self, amount, price):
         return api.buy_limit_order(self.c, self.k, self.s, amount, price)
 
-    def api_cancel_order(self, order_id):
+    def cancel_order(self, order_id):
         return api.cancel_order(self.c, self.k, self.s, order_id)
 
     def order_status(self, order_id):
@@ -57,8 +57,12 @@ class BitstampAPI(SingletonObservable):
     def compare_ticker_prices(p1, p2):
         return p1 == p2
 
+    @staticmethod
+    def ticker():
+        return api.ticker()
+
     def poll(self):
-        prices = api.ticker()
+        prices = BitstampAPI.ticker()
         if prices != self.last_polled_prices:  # == works even on Decimal.
             # prices have been updated!
             self.last_polled_prices = prices

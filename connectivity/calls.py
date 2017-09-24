@@ -59,6 +59,10 @@ class APICall(object):
         if 'key' in print_params:  # private call
             print_params['key'] = '*' * 3
             print_params['signature'] = '*' * 3
+
+        # with open('/tmp/bitstamp/{}-{}-{}-REQ.json'.format(), 'w') as debug_w:
+        #     json.dump(obj=params, fp=debug_w, indent=4, ensure_ascii=True)
+
         LOGGER.info('[{2}] TO BITSTAMP : {0} {1}'.format(url, print_params, req_id))
         if self.method == 'get':
             r = requests.get(url, params=params)
@@ -108,13 +112,8 @@ class APIAccountBalanceCall(APIPrivateCall):
     url = 'balance/'
 
     def _process_response(self, response):
-        response['btc_reserved'] = Decimal(response['btc_reserved'])
-        response['btc_available'] = Decimal(response['btc_available'])
-        response['btc_balance'] = Decimal(response['btc_balance'])
-        response['usd_reserved'] = Decimal(response['usd_reserved'])
-        response['usd_available'] = Decimal(response['usd_available'])
-        response['usd_balance'] = Decimal(response['usd_balance'])
-        response['fee'] = Decimal(response['fee'])
+        for a, x in response.items():
+            response[a] = Decimal(x)
 
 
 class APIBitcoinDepositAddressCall(APIPrivateCall):
@@ -141,10 +140,7 @@ class APIBuyLimitOrderBTCEURCall(APIPrivateCall):
             response['amount'] = Decimal(response['amount'])
 
         if isinstance(response, dict) and 'status' in response and response['status'] == 'error':
-            reason = response['reason']
-            if '__all__' in reason:
-                reason = reason['__all__'][0]
-            raise APIError(reason)
+            raise APIError(response)
 
 
 class APISellLimitBTCEUROrderCall(APIBuyLimitOrderBTCEURCall):
