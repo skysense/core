@@ -26,7 +26,7 @@ pd.set_option('display.max_columns', 500)
 pd.set_option('display.width', 1000)
 
 
-def read(arg_p):
+def static_read(arg_p):
     data_dir = arg_p.data_dir
     np_data = []
     all_json = glob(data_dir + '/*.json')
@@ -62,4 +62,4 @@ def read(arg_p):
 
 
 if __name__ == '__main__':
-    read(arg_parse().parse_args(sys.argv[1:]))
+    static_read(arg_parse().parse_args(sys.argv[1:]))

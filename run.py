@@ -46,7 +46,7 @@ class Trading:
 
         self.market_api.start()
         self.unwind_manager.start()
-        # self.news_api.start() - register it later.
+        # self.news_api.start() - register it later. TODO: implement it and use NLP here.
 
     def news_notification(self, observable, *args, **kwargs):
         self.logger.info('Received NEWS message from : {0}'.format(observable))

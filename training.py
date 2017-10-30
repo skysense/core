@@ -8,7 +8,7 @@ import tensorflow as tf
 import tensorflow.contrib.slim as slim
 from tensorflow.contrib.rnn.python.ops.rnn_cell import PhasedLSTMCell
 
-from data.read_price_data import read
+from data.read_price_data import static_read
 from helpers.file_logger import FileLogger
 from model.model_helpers import multi_lstm
 
@@ -85,7 +85,7 @@ def run_training(lstm_cell, hidden_size, batch_size, steps, log_file=None):
 
     ####################### DATA PART #######################
     # removing the columns where the last price did not move. It biases the model.
-    prices = read()
+    prices = static_read()
     prices = prices[['timestamp', 'last']].astype(np.float)
     prices['last'] = compute_returns(prices['last'])
     prices = prices[prices['last'] != 0]
