@@ -11,7 +11,7 @@ class BitstampAPI(SingletonObservable):
     def __init__(self):
         super().__init__(BitstampAPI)
         self.logger = logging.getLogger('BitstampAPI')
-        self.credentials = json.load(open('../credentials.json', 'r'))
+        self.credentials = json.load(open('./credentials.json', 'r'))
         self.c = self.credentials['CLIENT_ID']
         self.k = self.credentials['API_KEY']
         self.s = self.credentials['API_SECRET']
