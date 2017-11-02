@@ -2,7 +2,7 @@ import json
 import logging
 
 from connectivity import api
-from connectivity.singleton_observable import SingletonObservable
+from helpers.singleton_observable import SingletonObservable
 
 
 class BitstampAPI(SingletonObservable):

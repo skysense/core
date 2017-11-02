@@ -1,4 +1,4 @@
-from time import time, sleep
+from time import time
 
 
 class Throttling:
@@ -14,19 +14,7 @@ class Throttling:
             return True
         else:
             if self.raise_exception:
-                raise Exception('Throttling. You are sending too many requests. Max one every {} seconds.'.format(
-                    self.minimum_interval_between_two_requests))
+                err = 'Throttling. You are sending too many requests. Max one every {0} seconds.'.format(
+                    self.minimum_interval_between_two_requests)
+                raise Exception(err)
             return False
-
-
-if __name__ == '__main__':
-    t = Throttling(raise_exception=False)
-    print(t.check_validity())
-    print(t.check_validity())
-    sleep(t.minimum_interval_between_two_requests + 1)
-    print(t.check_validity())
-    print(t.check_validity())
-    sleep(t.minimum_interval_between_two_requests - 1)
-    print(t.check_validity())
-    sleep(2)
-    print(t.check_validity())

@@ -1,8 +1,10 @@
 from datetime import datetime
 
-from connectivity.singleton_observable import SingletonObservable
-from model.model import TIME_HORIZON
+from constants import TIME_HORIZON
+from helpers.singleton_observable import SingletonObservable
 
+
+# TODO: test it!
 
 class UnwindManager(SingletonObservable):
     _instance = None
@@ -15,7 +17,8 @@ class UnwindManager(SingletonObservable):
         self.trading_time_horizon = TIME_HORIZON  # In seconds. very important parameter!
 
     def poll(self):
-        # we pull because we want to be synchronized. Keeping a collection in memory is the best way to be de-sync
+        # we poll because we want to be synchronized.
+        #  Keeping a collection in memory is the best way to be de-sync
         # from the market.
         orders = self.persistence.enrich_persisted_orders_with_market_statuses(
             self.persistence.read_from_persistence())
@@ -34,7 +37,7 @@ class UnwindManager(SingletonObservable):
         # orders = self.persistence.enrich_persisted_orders_with_market_statuses(
         #    self.persistence.read_from_persistence())
 
-        # mass cancel
+        # TODO: implement mass cancel
         self.logger.info('{0} received a termination call. Will mass cancel all the opened orders.'.format(str(self)))
         self.logger.error('TODO!')
         self.logger.info('Going to shutdown.')

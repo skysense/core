@@ -9,7 +9,7 @@ from random import randint
 
 import requests
 
-DEFAULT_CURRENCY_PAIR = 'btceur'
+from constants import DEFAULT_CURRENCY_PAIR
 
 LOGGER = logging.getLogger('BitstampAPI')
 

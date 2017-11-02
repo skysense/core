@@ -1,6 +1,6 @@
 import feedparser
 
-from connectivity.singleton_observable import SingletonObservable
+from helpers.singleton_observable import SingletonObservable
 
 rss_feeds = open('../connectivity/feeds.txt').readlines()
 

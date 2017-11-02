@@ -1,10 +1,9 @@
 import numpy as np
 import pandas as pd
+from constants import TIME_HORIZON
 
 DATA_FILE = '../data_examples/btc_price_2017-09-13T03:45:28+00:00.csv'
 DATA = pd.read_csv(DATA_FILE, sep=',', parse_dates=True, index_col=0)
-
-TRADING_HORIZON = 1  # x ticks ahead.
 
 np.set_printoptions(threshold=np.nan)
 pd.set_option('display.height', 1000)
@@ -13,7 +12,7 @@ pd.set_option('display.max_columns', 500)
 pd.set_option('display.width', 1000)
 
 
-def run(trading_horizon=TRADING_HORIZON):
+def run(trading_horizon=TIME_HORIZON):
     d = pd.DataFrame(DATA[['timestamp', 'bid', 'ask']])
     d['bid_future'] = d['bid'].shift(-trading_horizon)
     d['fees_buy'] = 0.25 / 100 * d['ask']

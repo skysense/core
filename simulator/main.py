@@ -4,7 +4,7 @@ from decimal import Decimal
 from flask import Flask, url_for
 from flask import request
 
-from connectivity.calls import DEFAULT_CURRENCY_PAIR
+from constants import DEFAULT_CURRENCY_PAIR
 from simulator import logic
 
 app = Flask(__name__)

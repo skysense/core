@@ -36,7 +36,7 @@ def get_batch(bs, prices, sequence_length):
 
 def run_training(lstm_cell, hidden_size, batch_size, steps, log_file=None):
     if log_file is None:
-        log_file = 'log.tsv'
+        log_file = os.path.join('log', 'log.tsv')
 
     # MODEL PART #######################
     sequence_length = 20  # for now let's do like this.

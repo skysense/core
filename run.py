@@ -86,16 +86,7 @@ class Trading:
                         t2.terminate()
                         t2.join()
                     stop_main = True
-
             sleep(0.1)
-
-            # self.market_api.join()
-            # logging.info('market_api dead')
-
-            # self.unwind_manager.join()
-            # logging.info('unwind dead')
-
-            # self.news_api.join()
 
 
 def run():

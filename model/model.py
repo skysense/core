@@ -1,7 +1,5 @@
 import abc
 
-TIME_HORIZON = 30  # seconds
-
 
 class Model:
     def __init__(self):
@@ -17,4 +15,5 @@ class RandomCoinModel(Model):
         super().__init__()
 
     def call(self, *args, **kwargs):
+        # TODO: hard coded for reproducibility.
         return {'buy_confidence': 0.4, 'sell_confidence': 0.6}
