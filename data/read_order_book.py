@@ -6,8 +6,8 @@ from glob import glob
 
 import numpy as np
 import pandas as pd
-import progressbar
 from natsort import natsorted
+from tqdm import tqdm
 
 
 def arg_parse():
@@ -66,8 +66,7 @@ def read(arg_p):
     np_data = []
     all_json = glob(data_dir + '/*.json')
     print('Found {} order book updates.'.format(len(all_json)))
-    bar = progressbar.ProgressBar()
-    for filename in bar(natsorted(all_json)):
+    for filename in tqdm(natsorted(all_json)):
         try:
             with open(filename, 'r') as r:
                 d = json.load(r)
