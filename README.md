@@ -1,5 +1,11 @@
 # Core project of the Crypto Fund.
 
+## What is it for?
+
+- Price arbitrage between markets
+- Market making
+- Time Series forecasting
+
 ## Installation
 
 ```
