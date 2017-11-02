@@ -6,8 +6,8 @@ from glob import glob
 
 import numpy as np
 import pandas as pd
-import progressbar
 from natsort import natsorted
+from tqdm import tqdm
 
 
 def arg_parse():
@@ -26,13 +26,11 @@ pd.set_option('display.max_columns', 500)
 pd.set_option('display.width', 1000)
 
 
-def static_read(arg_p):
-    data_dir = arg_p.data_dir
+def clean_data(data_dir, output_file):
     np_data = []
     all_json = glob(data_dir + '/*.json')
     print('Found {} prices updates.'.format(len(all_json)))
-    bar = progressbar.ProgressBar()
-    for filename in bar(natsorted(all_json)):
+    for filename in tqdm(natsorted(all_json)):
         # print(filename)
         try:
             with open(filename, 'r') as r:
@@ -56,10 +54,14 @@ def static_read(arg_p):
     print('Removing duplicates...')
     print('Data set has {} rows.'.format(len(d)))
     d.index.names = ['DateTime_UTC']
-    d.to_csv(arg_p.output_file)
+    d.to_csv(output_file)
     print(d)
     return d
 
 
+def run(arg_p):
+    clean_data(arg_p.data_dir, arg_p.output_file)
+
+
 if __name__ == '__main__':
-    static_read(arg_parse().parse_args(sys.argv[1:]))
+    run(arg_parse().parse_args(sys.argv[1:]))

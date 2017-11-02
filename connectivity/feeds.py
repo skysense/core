@@ -11,7 +11,8 @@ class NewsAPI(SingletonObservable):
     def __init__(self):
         super().__init__(NewsAPI)
 
-    def run_news(self):
+    @staticmethod
+    def display_news():
         for rss_feed in rss_feeds:
 
             d = feedparser.parse(rss_feed)

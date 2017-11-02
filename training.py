@@ -1,4 +1,5 @@
 import argparse
+import os
 from collections import deque
 from time import time
 
@@ -8,7 +9,6 @@ import tensorflow as tf
 import tensorflow.contrib.slim as slim
 from tensorflow.contrib.rnn.python.ops.rnn_cell import PhasedLSTMCell
 
-from data.read_price_data import static_read
 from helpers.file_logger import FileLogger
 from model.model_helpers import multi_lstm
 
@@ -38,7 +38,7 @@ def run_training(lstm_cell, hidden_size, batch_size, steps, log_file=None):
     if log_file is None:
         log_file = 'log.tsv'
 
-    ####################### MODEL PART #######################
+    # MODEL PART #######################
     sequence_length = 20  # for now let's do like this.
     learning_rate = 1e-7
     print(hidden_size)
@@ -83,14 +83,14 @@ def run_training(lstm_cell, hidden_size, batch_size, steps, log_file=None):
     sess = tf.Session(config=tf.ConfigProto(log_device_placement=False))
     sess.run(tf.global_variables_initializer())
 
-    ####################### DATA PART #######################
+    # DATA PART #######################
     # removing the columns where the last price did not move. It biases the model.
-    prices = static_read()
+    prices = pd.read_csv(os.path.join('data_examples', 'btc_price_2017-09-13T03:45:28+00:00.csv'))
     prices = prices[['timestamp', 'last']].astype(np.float)
     prices['last'] = compute_returns(prices['last'])
     prices = prices[prices['last'] != 0]
 
-    ####################### RUN PART #######################
+    # RUN PART #######################
     running_difference = deque(maxlen=100)
     running_accuracy = deque(maxlen=100)
     for i in range(steps):

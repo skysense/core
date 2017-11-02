@@ -13,7 +13,7 @@ pd.set_option('display.max_columns', 500)
 pd.set_option('display.width', 1000)
 
 
-def run(trading_horizon=TRADING_HORIZON, data=DATA):
+def run(trading_horizon=TRADING_HORIZON):
     d = pd.DataFrame(DATA[['timestamp', 'bid', 'ask']])
     d['bid_future'] = d['bid'].shift(-trading_horizon)
     d['fees_buy'] = - 0.25 / 100 * d['ask']
