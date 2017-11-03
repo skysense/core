@@ -1,8 +1,5 @@
 # take action on the result of a model.
 # either BUY or SELL.
-# TODO: because we don't have short selling on Bitstamp, we only can BUY.
-# We could also sell if we have BTC. So let's also consider this.
-# The trade unwind manager takes care of closing the positions.
 
 
 class ModelActionTaker:

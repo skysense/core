@@ -1,5 +1,6 @@
 import json
 import logging
+import os
 
 from connectivity import api
 from helpers.singleton_observable import SingletonObservable
@@ -11,7 +12,11 @@ class BitstampAPI(SingletonObservable):
     def __init__(self):
         super().__init__(BitstampAPI)
         self.logger = logging.getLogger('BitstampAPI')
-        self.credentials = json.load(open('../credentials.json', 'r'))
+        for credential_filename in ['credentials.json', '../credentials.json']:
+            if os.path.isfile(credential_filename):
+                with open(credential_filename, 'r') as r:
+                    self.credentials = json.load(r)
+                    break
         self.c = self.credentials['CLIENT_ID']
         self.k = self.credentials['API_KEY']
         self.s = self.credentials['API_SECRET']
@@ -68,3 +73,7 @@ class BitstampAPI(SingletonObservable):
             self.last_polled_prices = prices
             return {'key': 'price_update', 'ticker': self.last_polled_prices}
         return None
+
+    def mass_cancel(self):
+        for open_order in self.open_orders():
+            self.cancel_order(open_order['id'])

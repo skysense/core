@@ -8,9 +8,7 @@ from connectivity.feeds import NewsAPI
 from connectivity.throttling import Throttling
 from model.model import RandomCoinModel
 from model.model_action_taker import ModelActionTaker
-from trader.order_management import OrderManager
-from trader.persistence import Persistence
-from trader.unwind_management import UnwindManager
+from trader.order_passing_system import OrderPassingSystem
 
 print('Program has started.')
 
@@ -39,13 +37,10 @@ class Trading:
         self.market_api.register_observer(self)
         self.news_api.register_observer(self)
         self.throttle = Throttling()
-        self.persistence = Persistence(self.market_api)
-        self.unwind_manager = UnwindManager(self.market_api, self.persistence)
-        self.oms = OrderManager(self.market_api, self.throttle, self.persistence)
+        self.oms = OrderPassingSystem(self.market_api, self.throttle)
         self.model_action_taker = ModelActionTaker(self.oms)
 
         self.market_api.start()
-        self.unwind_manager.start()
         # self.news_api.start() - register it later. TODO: implement it and use NLP here.
 
     def news_notification(self, observable, *args, **kwargs):
@@ -76,7 +71,7 @@ class Trading:
             self.lock.release()
 
     def run(self):
-        threads = [self.market_api, self.unwind_manager]
+        threads = [self.market_api]
         stop_main = False
         while not stop_main:
             for t in threads:

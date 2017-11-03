@@ -5,7 +5,7 @@ from connectivity.throttling import Throttling
 
 
 class TestThrottling(unittest.TestCase):
-    def test_upper(self):
+    def test_throttling(self):
         t = Throttling(raise_exception=False)
         assert t.check_validity()  # first request should go through.
         assert not t.check_validity()  # then should block.
