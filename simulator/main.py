@@ -4,7 +4,7 @@ from decimal import Decimal
 from flask import Flask, url_for
 from flask import request
 
-from constants import DEFAULT_CURRENCY_PAIR
+from constants import TRADING_DEFAULT_CURRENCY_PAIR
 from simulator import logic
 
 app = Flask(__name__)
@@ -52,7 +52,7 @@ def balance():
 
 
 # curl -X POST http://127.0.0.1:5000/buy/btceur/ -d "{'amount': 0.003, 'key': '***', 'signature': '***', 'nonce': '1506251375795815'}"
-@app.route('/buy/{}/'.format(DEFAULT_CURRENCY_PAIR), methods=['GET', 'POST'])
+@app.route('/buy/{}/'.format(TRADING_DEFAULT_CURRENCY_PAIR), methods=['GET', 'POST'])
 def buy():
     if request.method == 'POST':
         data = request.form
@@ -70,7 +70,7 @@ def buy():
             buy_market()
 
 
-@app.route('/sell/{}/'.format(DEFAULT_CURRENCY_PAIR), methods=['GET', 'POST'])
+@app.route('/sell/{}/'.format(TRADING_DEFAULT_CURRENCY_PAIR), methods=['GET', 'POST'])
 def sell():
     if request.method == 'POST':
         data = request.form
@@ -88,7 +88,7 @@ def sell():
             sell_market()
 
 
-@app.route('/buy/market/{}/'.format(DEFAULT_CURRENCY_PAIR), methods=['GET', 'POST'])
+@app.route('/buy/market/{}/'.format(TRADING_DEFAULT_CURRENCY_PAIR), methods=['GET', 'POST'])
 def buy_market():
     # https://www.bitstamp.net/api/v2/buy/market/btceur/
     # {'amount': 0.003, 'key': '***', 'signature': '***', 'nonce': '1506251375795815'}
@@ -135,7 +135,7 @@ def buy_market():
     return 'Buy'
 
 
-@app.route('/sell/market/{}/'.format(DEFAULT_CURRENCY_PAIR), methods=['GET', 'POST'])
+@app.route('/sell/market/{}/'.format(TRADING_DEFAULT_CURRENCY_PAIR), methods=['GET', 'POST'])
 def sell_market():
     if request.method == 'POST':
         data = request.form
@@ -205,7 +205,7 @@ def open_orders_all():
     return NotImplementedError()
 
 
-@app.route('/transactions/{}/'.format(DEFAULT_CURRENCY_PAIR), methods=['GET', 'POST'])
+@app.route('/transactions/{}/'.format(TRADING_DEFAULT_CURRENCY_PAIR), methods=['GET', 'POST'])
 def transactions():
     raise NotImplementedError()
 

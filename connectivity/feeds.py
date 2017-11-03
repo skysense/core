@@ -2,7 +2,7 @@ import feedparser
 
 from helpers.singleton_observable import SingletonObservable
 
-rss_feeds = open('../connectivity/feeds.txt').readlines()
+rss_feeds = open('feeds.txt').readlines()
 
 
 class NewsAPI(SingletonObservable):

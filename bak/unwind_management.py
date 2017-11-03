@@ -1,5 +1,5 @@
 from connectivity.api import USER_TRANSACTIONS_TYPE_MARKET_TRADE
-from constants import TIME_HORIZON
+from constants import DEPRECATED__TRADING_TIME_HORIZON
 from helpers.singleton_observable import SingletonObservable
 
 # TODO: test it!
@@ -15,7 +15,6 @@ The way I see it is:
 - sell 0.01. Balance is 0.01.
 - sell 0.01. Balance is 0.00.
 - sell 0.01. Balance is 0.00.
-
 """
 
 
@@ -26,7 +25,7 @@ class UnwindManager(SingletonObservable):
         super().__init__(UnwindManager)
         self.bitstamp_api = bitstamp_api
         self.polling_interval = 15  # In seconds. This API call is cached for 10 seconds.
-        self.trading_time_horizon = TIME_HORIZON  # In seconds. very important parameter!
+        self.trading_time_horizon = DEPRECATED__TRADING_TIME_HORIZON  # In seconds. very important parameter!
 
     def poll(self):
         # we poll because we want to be synchronized.

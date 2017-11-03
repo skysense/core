@@ -1,9 +1,11 @@
 from time import time
 
+from constants import TRADING_MIN_INTERVAL_BETWEEN_TWO_SEND_ORDERS
+
 
 class Throttling:
     def __init__(self, raise_exception=True):
-        self.minimum_interval_between_two_requests = 10  # seconds
+        self.minimum_interval_between_two_requests = TRADING_MIN_INTERVAL_BETWEEN_TWO_SEND_ORDERS
         self.timestamp_last_valid_throttling_call = time() - self.minimum_interval_between_two_requests
         self.raise_exception = raise_exception
 

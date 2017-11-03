@@ -1,18 +1,17 @@
-# take action on the result of a model.
-# either BUY or SELL.
+from constants import TRADING_BITCOIN_QUANTITY_TO_BUY_OR_SELL
+from constants import BUY_CONFIDENCE_THRESHOLD
+from constants import SELL_CONFIDENCE_THRESHOLD
 
 
 class ModelActionTaker:
-    def __init__(self, order_management_system):
-        self.oms = order_management_system
+    def __init__(self, order_passing_system):
+        self.order_passing_system = order_passing_system
+        self.order_quantity = TRADING_BITCOIN_QUANTITY_TO_BUY_OR_SELL
 
     def take_trading_action(self, model_output):
-        # DUMB
-        if model_output['buy_confidence'] + model_output['sell_confidence'] != 1:
-            raise Exception('buy_confidence and sell_confidence do not add to 1.')
-        if model_output['buy_confidence'] > 0.9:
-            self.oms.send_buy_order(amount=0.01)
-        elif model_output['sell_confidence'] > 0.9:
-            self.oms.send_sell_order(amount=0.01)
+        if model_output.buy_confidence > BUY_CONFIDENCE_THRESHOLD:
+            self.order_passing_system.send_buy_order(amount=self.order_quantity)
+        elif model_output.sell_confidence > SELL_CONFIDENCE_THRESHOLD:
+            self.order_passing_system.send_sell_order(amount=self.order_quantity)
         else:
             pass

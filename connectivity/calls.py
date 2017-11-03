@@ -9,7 +9,7 @@ from random import randint
 
 import requests
 
-from constants import DEFAULT_CURRENCY_PAIR
+from constants import TRADING_DEFAULT_CURRENCY_PAIR
 
 LOGGER = logging.getLogger('BitstampAPI')
 
@@ -127,7 +127,7 @@ class APIBitcoinWithdrawalCall(APIPrivateCall):
 # **** LIMIT # ****
 
 class APIBuyLimitOrderBTCEURCall(APIPrivateCall):
-    url = 'buy/{}/'.format(DEFAULT_CURRENCY_PAIR)
+    url = 'buy/{}/'.format(TRADING_DEFAULT_CURRENCY_PAIR)
 
     def _process_response(self, response):
         if 'datetime' in response:
@@ -144,7 +144,7 @@ class APIBuyLimitOrderBTCEURCall(APIPrivateCall):
 
 
 class APISellLimitBTCEUROrderCall(APIBuyLimitOrderBTCEURCall):
-    url = 'sell/{}/'.format(DEFAULT_CURRENCY_PAIR)
+    url = 'sell/{}/'.format(TRADING_DEFAULT_CURRENCY_PAIR)
 
 
 # **** LIMIT # ****
@@ -154,11 +154,11 @@ class APISellLimitBTCEUROrderCall(APIBuyLimitOrderBTCEURCall):
 
 
 class APIBuyMarketOrderBTCEURCall(APIBuyLimitOrderBTCEURCall):
-    url = 'buy/market/{}/'.format(DEFAULT_CURRENCY_PAIR)
+    url = 'buy/market/{}/'.format(TRADING_DEFAULT_CURRENCY_PAIR)
 
 
 class APISellMarketOrderBTCEURCall(APIBuyLimitOrderBTCEURCall):
-    url = 'sell/market/{}/'.format(DEFAULT_CURRENCY_PAIR)
+    url = 'sell/market/{}/'.format(TRADING_DEFAULT_CURRENCY_PAIR)
 
 
 # **** MARKET # ****
@@ -181,7 +181,7 @@ class APIEURUSDConversionRateCall(APICall):
 
 
 class APIOrderBookCall(APICall):
-    url = 'order_book/{}/'.format(DEFAULT_CURRENCY_PAIR)
+    url = 'order_book/{}/'.format(TRADING_DEFAULT_CURRENCY_PAIR)
 
     def _process_response(self, response):
         response['timestamp'] = dt(response['timestamp'])
@@ -214,7 +214,7 @@ class APIRippleWithdrawalCall(APIPrivateCall):
 
 
 class APITickerCall(APICall):
-    url = 'ticker/{}/'.format(DEFAULT_CURRENCY_PAIR)
+    url = 'ticker/{}/'.format(TRADING_DEFAULT_CURRENCY_PAIR)
 
     def _process_response(self, response):
         response['last'] = Decimal(response['last'])
@@ -227,7 +227,7 @@ class APITickerCall(APICall):
 
 
 class APITransactionsCall(APICall):
-    url = 'transactions/{}/'.format(DEFAULT_CURRENCY_PAIR)
+    url = 'transactions/{}/'.format(TRADING_DEFAULT_CURRENCY_PAIR)
 
     def _process_response(self, response):
         for tx in response:

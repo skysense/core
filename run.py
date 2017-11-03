@@ -2,28 +2,14 @@ import logging
 import threading
 from datetime import datetime
 from time import sleep
-
+import os
 from connectivity.bitstamp_api import BitstampAPI
 from connectivity.feeds import NewsAPI
+from connectivity.order_passing_system import OrderPassingSystem
 from connectivity.throttling import Throttling
+from constants import ADMIN_LOG_FORMAT, ADMIN_LOG_PROD_FLAG
 from model.model import RandomCoinModel
 from model.model_action_taker import ModelActionTaker
-from trader.order_passing_system import OrderPassingSystem
-
-print('Program has started.')
-
-PROD_FLAG = False
-
-LOG_FORMAT = '%(asctime)s - %(name)15s - %(levelname)s - %(message)s'
-
-if PROD_FLAG:
-    print('Check the log file trading_*.log if nothing is displayed in the console.')
-    logging.basicConfig(level=logging.INFO,
-                        format=LOG_FORMAT,
-                        filename='trading_{}.log'.format(datetime.now()))
-else:
-    logging.basicConfig(level=logging.INFO,
-                        format=LOG_FORMAT)
 
 
 class Trading:
@@ -85,6 +71,17 @@ class Trading:
 
 
 def run():
+    print('Program has started.')
+
+    if ADMIN_LOG_PROD_FLAG:
+        log_filename = os.path.join('log', 'trading_{0}.log'.format(datetime.now()))
+        print('Check the log file {0} if nothing is displayed in the console.'.format(log_filename))
+        logging.basicConfig(level=logging.INFO,
+                            format=ADMIN_LOG_FORMAT,
+                            filename=log_filename)
+    else:
+        logging.basicConfig(level=logging.INFO,
+                            format=ADMIN_LOG_FORMAT)
     trd = Trading()
     trd.run()
 

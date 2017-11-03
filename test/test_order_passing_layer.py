@@ -2,12 +2,12 @@ import unittest
 from time import sleep
 
 from connectivity.bitstamp_api import BitstampAPI
+from connectivity.order_passing_system import OrderPassingSystem
 from connectivity.throttling import Throttling
-from trader.order_passing_system import OrderPassingSystem
 
 
-class TestOrderManagement(unittest.TestCase):
-    def test_oms(self):
+class TestOrderPassingLayer(unittest.TestCase):
+    def test_order_passing(self):
         b = BitstampAPI()
         t = Throttling()
         oms = OrderPassingSystem(bitstamp_api=b, throttle=t)

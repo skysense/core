@@ -9,8 +9,7 @@ import tensorflow as tf
 import tensorflow.contrib.slim as slim
 from tensorflow.contrib.rnn.python.ops.rnn_cell import PhasedLSTMCell
 
-from helpers.file_logger import FileLogger
-from model.model_helpers import multi_lstm
+from model.model_helpers import stacked_lstm, ModelFileLogger
 
 
 def compute_returns(close_prices):
@@ -47,18 +46,18 @@ def run_training(lstm_cell, hidden_size, batch_size, steps, log_file=None):
     print(learning_rate)
     print(sequence_length)
 
-    file_logger = FileLogger(log_file, ['step', 'testing_loss', 'benchmark_loss', 'running_difference', 'running_acc'])
+    file_logger = ModelFileLogger(log_file, ['step', 'testing_loss', 'benchmark_loss', 'running_difference', 'running_acc'])
     x_ = tf.placeholder(tf.float32, (batch_size, sequence_length, 1))
     t_ = tf.placeholder(tf.float32, (batch_size, sequence_length, 1))
     y_ = tf.placeholder(tf.float32, (batch_size, 1))
 
     inputs = (t_, x_)
 
-    rnn_out = multi_lstm(cell_fn=lstm_cell,
-                         input_tensor=inputs,
-                         num_cells=hidden_size,
-                         num_lstm_layers=3,
-                         return_only_last_output=True)
+    rnn_out = stacked_lstm(cell_fn=lstm_cell,
+                           input_tensor=inputs,
+                           num_cells=hidden_size,
+                           num_lstm_layers=3,
+                           return_only_last_output=True)
 
     out = slim.fully_connected(inputs=rnn_out,
                                num_outputs=hidden_size,
