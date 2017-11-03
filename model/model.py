@@ -1,5 +1,7 @@
 import abc
 
+from model.model_helpers import ModelOutput
+
 
 class Model:
     def __init__(self):
@@ -16,4 +18,4 @@ class RandomCoinModel(Model):
 
     def call(self, *args, **kwargs):
         # TODO: hard coded for reproducibility.
-        return {'buy_confidence': 0.4, 'sell_confidence': 0.6}
+        return ModelOutput(buy_confidence=0.5, sell_confidence=0.5)

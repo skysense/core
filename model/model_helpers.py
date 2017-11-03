@@ -37,3 +37,7 @@ class ModelOutput:
         self.sell_confidence = float(sell_confidence)
         if np.abs(self.buy_confidence + self.sell_confidence - 1) > 1e-5:
             raise Exception('buy_confidence and sell_confidence do not add to 1.')
+
+    def __str__(self):
+        return '[buy_confidence = {0}, sell_confidence = {1}]'.format(self.buy_confidence,
+                                                                      self.sell_confidence)

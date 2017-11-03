@@ -77,3 +77,13 @@ class BitstampAPI(SingletonObservable):
     def mass_cancel(self):
         for open_order in self.open_orders():
             self.cancel_order(open_order['id'])
+
+    def terminate(self):
+        super().terminate()
+        self.logger.info('{0} received a termination call. Will mass cancel all the opened orders.'.format(str(self)))
+        self.logger.info('Going to shutdown.')
+        self.mass_cancel()
+        open_orders = self.open_orders()
+
+        if len(open_orders) == 0:
+            self.logger.info('SUCCESS! No more open orders were found.')

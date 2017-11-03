@@ -10,8 +10,8 @@ class ModelActionTaker:
 
     def take_trading_action(self, model_output):
         if model_output.buy_confidence > BUY_CONFIDENCE_THRESHOLD:
-            self.order_passing_system.send_buy_order(amount=self.order_quantity)
+            return self.order_passing_system.send_buy_order(amount=self.order_quantity)
         elif model_output.sell_confidence > SELL_CONFIDENCE_THRESHOLD:
-            self.order_passing_system.send_sell_order(amount=self.order_quantity)
+            return self.order_passing_system.send_sell_order(amount=self.order_quantity)
         else:
-            pass
+            return None
