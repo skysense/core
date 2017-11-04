@@ -7,7 +7,7 @@ from time import sleep
 from connectivity.bitstamp_api import BitstampAPI
 from connectivity.order_passing_system import OrderPassingSystem
 from connectivity.throttling import Throttling
-from constants import ADMIN_LOG_FORMAT, ADMIN_LOG_PROD_FLAG, MODEL_WARM_UP_PHASE_NUM_TICKS
+from constants import ADMIN_LOG_FORMAT, ADMIN_PROD_FLAG, MODEL_WARM_UP_PHASE_NUM_TICKS
 from model.model import RandomCoinModel
 from model.model_action_taker import ModelActionTaker
 from model.model_data_recorder import ModelDataRecorder
@@ -86,7 +86,7 @@ class Trading:
 def run():
     print('Program has started.')
 
-    if ADMIN_LOG_PROD_FLAG:
+    if ADMIN_PROD_FLAG:
         log_filename = os.path.join('log', 'trading_{0}.log'.format(datetime.now()))
         print('Check the log file {0} if nothing is displayed in the console.'.format(log_filename))
         logging.basicConfig(level=logging.INFO,

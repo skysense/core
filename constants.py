@@ -10,11 +10,11 @@ TRADING_BUY_CONFIDENCE_THRESHOLD = 0.999  # between 0 and 1.
 
 TRADING_SELL_CONFIDENCE_THRESHOLD = 0.999  # between 0 and 1.
 
-MODEL_WARM_UP_PHASE_NUM_TICKS = 300  # number of market ticks before we can start to call the model.
+MODEL_WARM_UP_PHASE_NUM_TICKS = 100  # number of market ticks before we can start to call the model.
 
 ADMIN_LOG_FORMAT = '%(asctime)s - %(name)15s - %(levelname)s - %(message)s'
 
-ADMIN_LOG_PROD_FLAG = False
+ADMIN_PROD_FLAG = False
 
 # deprecated do not use it.
 # we don't have a trading horizon now. We just watch the market and make
