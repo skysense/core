@@ -11,6 +11,7 @@ if not ADMIN_PROD_FLAG:
     SIMULATOR_REPLAYER_DATA_FILE = '../data_examples/btc_price_2017-09-13T03:45:28+00:00.csv'
     API_URL_V1 = 'http://127.0.0.1:5000/'
     API_URL_V2 = 'http://127.0.0.1:5000/v2/'
+    TICKER_POLL_INTERVAL_SEC = 5
 else:
     # Production. With Bitstamp.
     TRADING_MAX_NUMBER_OF_OUTSTANDING_ORDERS_ALLOWED = 1
@@ -21,6 +22,7 @@ else:
     MODEL_WARM_UP_PHASE_NUM_TICKS = 100  # number of market ticks before we can start to call the model.
     API_URL_V1 = 'https://www.bitstamp.net/api/'
     API_URL_V2 = 'https://www.bitstamp.net/api/v2/'
+    TICKER_POLL_INTERVAL_SEC = 5
 
 ADMIN_LOG_FORMAT = '%(asctime)s - %(name)15s - %(levelname)s - %(message)s'
 

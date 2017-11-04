@@ -3,6 +3,7 @@ import logging
 import os
 
 from connectivity import api
+from constants import TICKER_POLL_INTERVAL_SEC
 from helpers.singleton_observable import SingletonObservable
 
 
@@ -22,6 +23,7 @@ class BitstampAPI(SingletonObservable):
         self.s = self.credentials['API_SECRET']
         self.ticker_headers = ['high', 'last', 'timestamp', 'bid', 'vwap', 'volume', 'low', 'ask', 'open']
         self.last_polled_prices = None
+        self.polling_interval = TICKER_POLL_INTERVAL_SEC  # in seconds
 
         self.logger.info('CLIENT_ID  (truncated) = {}[...]'.format(self.c[0:3]))
         self.logger.info('API_KEY    (truncated) = {}[...]'.format(self.k[0:10]))
