@@ -1,7 +1,6 @@
 # will contain=
 # - re player for bid-ask prices.
 # - basic in memory logic database and so on
-from _pydecimal import Decimal
 from datetime import datetime
 from random import randint
 
@@ -22,18 +21,24 @@ def generate_random_order_id():
     return str(randint(a=100000000, b=999999999))
 
 
-def resting_order(user, is_buy=True):
+def limit_order(user, is_buy=True):
     if request.method == 'POST':
         data = request.form
         order_id = generate_random_order_id()
-        user.open_orders[order_id] = {'price': Decimal(str(BTC_EUR_FIXED_PRICE)),
-                                      'currency_pair': 'BTC/EUR',
-                                      'datetime': str(datetime.now().strftime(FMT_DATETIME)),
-                                      'amount': Decimal(data['amount']),
-                                      'type': '0' if is_buy else '1',  # BUY
-                                      'id': str(order_id)
-                                      }
-        return 'Order is resting.'
+        order = {'price': str(BTC_EUR_FIXED_PRICE),
+                 'currency_pair': 'BTC/EUR',
+                 'datetime': str(datetime.now().strftime(FMT_DATETIME)),
+                 'amount': data['amount'],
+                 'type': '0' if is_buy else '1',  # BUY
+                 'id': str(order_id)
+                 }
+        user.open_orders[order_id] = order
+
+        user.order_statuses[order_id] = \
+            {'status': 'Open',
+             'id': str(order_id)
+             }
+        return order
     else:
         return 'Only available through POST.'
 
@@ -42,8 +47,8 @@ def send_order(user, is_buy=True):
     if request.method == 'POST':
         data = request.form
         print(data)
-        if int(data['admin_resting_order']):
-            return resting_order(user, is_buy)
+        if 'price' in data:
+            return limit_order(user, is_buy)
         else:
             return market_order(user, is_buy)
     else:
@@ -105,19 +110,14 @@ def market_order(user, is_buy=True):
              'eur': fiat_total
              })
 
-        user.order_statuses[order_id] = \
-            {'status': 'Finished',
-             'transactions': [
-                 {'fee': str(total_fees),
-                  'price': str(BTC_EUR_FIXED_PRICE),
-                  'datetime': date,
-                  'btc': btc_order_amount_str,
-                  'tid': transaction_id,
-                  'type': '2',  # MARKET TRADE
-                  'eur': fiat_total
-                  }
-             ]}
-        return 'Order sent.'
+        user.order_statuses[order_id] = {'status': 'Open', 'transactions': []}
+
+        return {'currency_pair': 'BTC/EUR',
+                'datetime': str(datetime.now().strftime(FMT_DATETIME)),
+                'amount': data['amount'],
+                'type': '0' if is_buy else '1',  # BUY
+                'id': str(order_id)
+                }
     else:
         return 'Only available through POST.'
 

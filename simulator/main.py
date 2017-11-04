@@ -1,14 +1,15 @@
 from flask import Flask, url_for
+from flask import jsonify
 from flask import request
 
-from constants import SIMU_REPLAYER_DATA_FILE
+from constants import SIMULATOR_REPLAYER_DATA_FILE
 from constants import TRADING_DEFAULT_CURRENCY_PAIR
 from simulator.logic import send_order, market_order, UserAccount
 from simulator.replayer import Replayer
 
 app = Flask(__name__)
 user = UserAccount()
-replayer = Replayer(data_file=SIMU_REPLAYER_DATA_FILE)
+replayer = Replayer(data_file=SIMULATOR_REPLAYER_DATA_FILE)
 
 
 @app.errorhandler(404)
@@ -40,16 +41,16 @@ def list_all_end_points():
         sorted(['<a href="{0}">{0}</a> -> {1}()'.format(l, v) for (l, v) in links])) + '</b>'
 
 
-@app.route('/ticker/', methods=['GET', 'POST'], strict_slashes=False)
-@app.route('/v2/ticker/', methods=['GET', 'POST'], strict_slashes=False)
+@app.route('/ticker/{}/'.format(TRADING_DEFAULT_CURRENCY_PAIR), methods=['GET', 'POST'], strict_slashes=False)
+@app.route('/v2/ticker/{}/'.format(TRADING_DEFAULT_CURRENCY_PAIR), methods=['GET', 'POST'], strict_slashes=False)
 def ticker():
-    return str(replayer.next())
+    return jsonify(replayer.next())
 
 
 @app.route('/balance/', methods=['GET', 'POST'], strict_slashes=False)
 @app.route('/v2/balance/', methods=['GET', 'POST'], strict_slashes=False)
 def balance():
-    return str(user.balance())
+    return jsonify(user.balance())
     # if request.method == 'GET':
     #     # for the web interface.
     #     return json.dumps(user.balance(), indent=4).replace('\n', '<br/>')
@@ -60,36 +61,39 @@ def balance():
 @app.route('/buy/{}/'.format(TRADING_DEFAULT_CURRENCY_PAIR), methods=['GET', 'POST'], strict_slashes=False)
 @app.route('/v2/buy/{}/'.format(TRADING_DEFAULT_CURRENCY_PAIR), methods=['GET', 'POST'], strict_slashes=False)
 def buy():
-    return send_order(user, is_buy=True)
+    return jsonify(send_order(user, is_buy=True))
 
 
 @app.route('/sell/{}/'.format(TRADING_DEFAULT_CURRENCY_PAIR), methods=['GET', 'POST'], strict_slashes=False)
 @app.route('/v2/sell/{}/'.format(TRADING_DEFAULT_CURRENCY_PAIR), methods=['GET', 'POST'], strict_slashes=False)
 def sell():
-    return send_order(user, is_buy=False)
+    return jsonify(send_order(user, is_buy=False))
 
 
 @app.route('/buy/market/{}/'.format(TRADING_DEFAULT_CURRENCY_PAIR), methods=['GET', 'POST'], strict_slashes=False)
 @app.route('/v2/buy/market/{}/'.format(TRADING_DEFAULT_CURRENCY_PAIR), methods=['GET', 'POST'], strict_slashes=False)
 def buy_market():
-    return market_order(user, is_buy=True)
+    return jsonify(market_order(user, is_buy=True))
 
 
 @app.route('/sell/market/{}/'.format(TRADING_DEFAULT_CURRENCY_PAIR), methods=['GET', 'POST'], strict_slashes=False)
 @app.route('/v2/sell/market/{}/'.format(TRADING_DEFAULT_CURRENCY_PAIR), methods=['GET', 'POST'], strict_slashes=False)
 def sell_market():
-    return market_order(user, is_buy=False)
+    return jsonify(market_order(user, is_buy=False))
 
 
 @app.route('/cancel_order/', methods=['GET', 'POST'], strict_slashes=False)
 @app.route('/v2/cancel_order/', methods=['GET', 'POST'], strict_slashes=False)
 def cancel_order():
     if request.method == 'POST':
-        data = request.form
-        print(data)
-        order_id = data['id']
-        del user.open_orders[order_id]
-        return 'Order canceled.'
+        try:
+            data = request.form
+            print(data)
+            order_id = data['id']
+            del user.open_orders[order_id]
+            return 'Order canceled.'
+        except:
+            return jsonify({'error': 'Invalid order id'})
     else:
         return 'Only available through POST.'
 
@@ -108,7 +112,7 @@ def order_status():
 @app.route('/open_orders/all/', methods=['GET', 'POST'], strict_slashes=False)
 @app.route('/v2/open_orders/all/', methods=['GET', 'POST'], strict_slashes=False)
 def open_orders_all():
-    return user.open_orders
+    return b'[]'
 
 
 @app.route('/transactions/{}/'.format(TRADING_DEFAULT_CURRENCY_PAIR), methods=['GET', 'POST'], strict_slashes=False)

@@ -3,6 +3,10 @@ from time import time
 from constants import TRADING_MIN_INTERVAL_BETWEEN_TWO_SEND_ORDERS
 
 
+class ThrottlingException(Exception):
+    pass
+
+
 class Throttling:
     def __init__(self, raise_exception=True):
         self.minimum_interval_between_two_requests = TRADING_MIN_INTERVAL_BETWEEN_TWO_SEND_ORDERS
@@ -18,5 +22,5 @@ class Throttling:
             if self.raise_exception:
                 err = 'Throttling. You are sending too many requests. Max one every {0} seconds.'.format(
                     self.minimum_interval_between_two_requests)
-                raise Exception(err)
+                raise ThrottlingException(err)
             return False

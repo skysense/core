@@ -1,5 +1,7 @@
 import abc
 
+import numpy as np
+
 from model.model_helpers import ModelOutput
 
 
@@ -17,5 +19,5 @@ class RandomCoinModel(Model):
         super().__init__()
 
     def call(self, *args, **kwargs):
-        # TODO: hard coded for reproducibility.
-        return ModelOutput(buy_confidence=0.5, sell_confidence=0.5)
+        buy = np.random.rand()
+        return ModelOutput(buy_confidence=buy, sell_confidence=1 - buy)

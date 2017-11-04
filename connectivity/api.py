@@ -1,4 +1,6 @@
 from . import calls
+from constants import API_URL_V1
+from constants import API_URL_V2
 
 # Constants
 BUY_LIMIT_ORDER_TYPE_BUY = 0
@@ -33,9 +35,11 @@ WITHDRAWAL_REQUEST_STATUS_FINISHED = 2
 WITHDRAWAL_REQUEST_STATUS_CANCELLED = 3
 WITHDRAWAL_REQUEST_STATUS_FAILED = 4
 
-API_URL_V1 = 'https://www.bitstamp.net/api/'
-API_URL_V2 = 'https://www.bitstamp.net/api/v2/'
+# API_URL_V1 = 'https://www.bitstamp.net/api/'
+# API_URL_V2 = 'https://www.bitstamp.net/api/v2/'
 
+# API_URL_V1 = 'http://127.0.0.1:5000/'
+# API_URL_V2 = 'http://127.0.0.1:5000/v2/'
 
 # Wrapper functions
 
