@@ -11,8 +11,10 @@ class Replayer:
         self.cursor = 0
 
     def next(self):
-        d = self.data[self.cursor]
-        self.cursor += 1
+        d = {}
+        if self.cursor < len(self.data):
+            d = self.data[self.cursor]
+            self.cursor += 1
         return d
 
 
