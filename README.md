@@ -33,7 +33,7 @@ curl -X POST http://127.0.0.1:5000/v2/balance/ # should display a nice JSON with
 python3 start_trading.py
 
 # wait a few minutes
-# Ctrl+C will quit the run script and finishes by a mass cancel of all open orders.
+# Ctrl+C will quit the run script and finish by a mass cancel of all open orders.
 
 curl -X POST http://127.0.0.1:5000/v2/balance/
 
