@@ -1,17 +1,21 @@
 from flask import Flask, url_for
 from flask import request
 
+from constants import SIMU_REPLAYER_DATA_FILE
 from constants import TRADING_DEFAULT_CURRENCY_PAIR
 from simulator.logic import send_order, market_order, UserAccount
+from simulator.replayer import Replayer
 
 app = Flask(__name__)
 user = UserAccount()
+replayer = Replayer(data_file=SIMU_REPLAYER_DATA_FILE)
 
 
 @app.route('/reset/', methods=['GET', 'POST'], strict_slashes=False)
 def reset():
-    global user
+    global user, replayer
     user = UserAccount()
+    replayer.reset()
     return 'Reset.'
 
 
@@ -29,6 +33,11 @@ def list_all_end_points():
             links.append((url, rule.endpoint))
     return '<b>' + '<br/><br/>'.join(
         sorted(['<a href="{0}">{0}</a> -> {1}()'.format(l, v) for (l, v) in links])) + '</b>'
+
+
+@app.route('/ticker/', methods=['GET', 'POST'], strict_slashes=False)
+def ticker():
+    return str(replayer.next())
 
 
 @app.route('/balance/', methods=['GET', 'POST'], strict_slashes=False)

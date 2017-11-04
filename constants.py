@@ -12,6 +12,8 @@ TRADING_SELL_CONFIDENCE_THRESHOLD = 0.999  # between 0 and 1.
 
 MODEL_WARM_UP_PHASE_NUM_TICKS = 100  # number of market ticks before we can start to call the model.
 
+SIMU_REPLAYER_DATA_FILE = '../data_examples/btc_price_2017-09-13T03:45:28+00:00.csv'
+
 ADMIN_LOG_FORMAT = '%(asctime)s - %(name)15s - %(levelname)s - %(message)s'
 
 ADMIN_PROD_FLAG = False
