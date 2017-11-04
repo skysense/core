@@ -11,6 +11,11 @@ user = UserAccount()
 replayer = Replayer(data_file=SIMU_REPLAYER_DATA_FILE)
 
 
+@app.errorhandler(404)
+def page_not_found(err):
+    return 'Endpoint not found. Browse / to list all the endpoints.'
+
+
 @app.route('/reset/', methods=['GET', 'POST'], strict_slashes=False)
 def reset():
     global user, replayer
@@ -36,11 +41,13 @@ def list_all_end_points():
 
 
 @app.route('/ticker/', methods=['GET', 'POST'], strict_slashes=False)
+@app.route('/v2/ticker/', methods=['GET', 'POST'], strict_slashes=False)
 def ticker():
     return str(replayer.next())
 
 
 @app.route('/balance/', methods=['GET', 'POST'], strict_slashes=False)
+@app.route('/v2/balance/', methods=['GET', 'POST'], strict_slashes=False)
 def balance():
     return str(user.balance())
     # if request.method == 'GET':
@@ -51,26 +58,31 @@ def balance():
 
 
 @app.route('/buy/{}/'.format(TRADING_DEFAULT_CURRENCY_PAIR), methods=['GET', 'POST'], strict_slashes=False)
+@app.route('/v2/buy/{}/'.format(TRADING_DEFAULT_CURRENCY_PAIR), methods=['GET', 'POST'], strict_slashes=False)
 def buy():
     return send_order(user, is_buy=True)
 
 
 @app.route('/sell/{}/'.format(TRADING_DEFAULT_CURRENCY_PAIR), methods=['GET', 'POST'], strict_slashes=False)
+@app.route('/v2/sell/{}/'.format(TRADING_DEFAULT_CURRENCY_PAIR), methods=['GET', 'POST'], strict_slashes=False)
 def sell():
     return send_order(user, is_buy=False)
 
 
 @app.route('/buy/market/{}/'.format(TRADING_DEFAULT_CURRENCY_PAIR), methods=['GET', 'POST'], strict_slashes=False)
+@app.route('/v2/buy/market/{}/'.format(TRADING_DEFAULT_CURRENCY_PAIR), methods=['GET', 'POST'], strict_slashes=False)
 def buy_market():
     return market_order(user, is_buy=True)
 
 
 @app.route('/sell/market/{}/'.format(TRADING_DEFAULT_CURRENCY_PAIR), methods=['GET', 'POST'], strict_slashes=False)
+@app.route('/v2/sell/market/{}/'.format(TRADING_DEFAULT_CURRENCY_PAIR), methods=['GET', 'POST'], strict_slashes=False)
 def sell_market():
     return market_order(user, is_buy=False)
 
 
 @app.route('/cancel_order/', methods=['GET', 'POST'], strict_slashes=False)
+@app.route('/v2/cancel_order/', methods=['GET', 'POST'], strict_slashes=False)
 def cancel_order():
     if request.method == 'POST':
         data = request.form
@@ -84,6 +96,7 @@ def cancel_order():
 
 # {'id': '320464858', 'key': '***', 'signature': '***', 'nonce': '1506251383558164'}
 @app.route('/order_status/', methods=['GET', 'POST'], strict_slashes=False)
+@app.route('/v2/order_status/', methods=['GET', 'POST'], strict_slashes=False)
 def order_status():
     if request.method == 'POST':
         data = request.form
@@ -93,16 +106,19 @@ def order_status():
 
 
 @app.route('/open_orders/all/', methods=['GET', 'POST'], strict_slashes=False)
+@app.route('/v2/open_orders/all/', methods=['GET', 'POST'], strict_slashes=False)
 def open_orders_all():
     return user.open_orders
 
 
 @app.route('/transactions/{}/'.format(TRADING_DEFAULT_CURRENCY_PAIR), methods=['GET', 'POST'], strict_slashes=False)
+@app.route('/v2/transactions/{}/'.format(TRADING_DEFAULT_CURRENCY_PAIR), methods=['GET', 'POST'], strict_slashes=False)
 def transactions():
     raise user.transactions
 
 
 @app.route('/user_transactions/', methods=['GET', 'POST'], strict_slashes=False)
+@app.route('/v2/user_transactions/', methods=['GET', 'POST'], strict_slashes=False)
 def user_transactions():
     return user.transactions[::-1]
 
