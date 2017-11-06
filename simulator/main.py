@@ -54,7 +54,9 @@ def ticker():
     if SIMULATOR_USE_REPLAYER:
         return jsonify(replayer.next())
     else:
-        return jsonify(BitstampAPI.ticker(API_URL_V2_TICKER))
+        tick = BitstampAPI.ticker(API_URL_V2_TICKER)
+        tick.update({k: str(v) for (k, v) in tick.items()})
+        return jsonify(tick)
 
 
 @app.route('/balance/', methods=['GET', 'POST'], strict_slashes=False)
