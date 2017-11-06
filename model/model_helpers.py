@@ -40,8 +40,8 @@ class ModelOutput:
             raise Exception('buy, sell and hold confidence do not add up to 1.')
 
     def __str__(self):
-        return '[buy_confidence = {0}, ' \
-               'sell_confidence = {1}, ' \
-               'hold_confidence = {2}]'.format(self.buy_confidence,
-                                               self.sell_confidence,
-                                               self.hold_confidence)
+        return '[buy_confidence = {0:.3f}, ' \
+               'sell_confidence = {1:.3f}, ' \
+               'hold_confidence = {2:.3f}]'.format(self.buy_confidence,
+                                                   self.sell_confidence,
+                                                   self.hold_confidence)
