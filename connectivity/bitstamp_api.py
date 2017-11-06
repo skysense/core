@@ -65,8 +65,10 @@ class BitstampAPI(SingletonObservable):
         return p1 == p2
 
     @staticmethod
-    def ticker():
-        return api.ticker()
+    def ticker(end_point=None):
+        if end_point is None:
+            return api.ticker()
+        return api.ticker(end_point)
 
     def poll(self):
         prices = BitstampAPI.ticker()

@@ -2,14 +2,20 @@ from flask import Flask, url_for
 from flask import jsonify
 from flask import request
 
+from connectivity.bitstamp_api import BitstampAPI
 from constants import SIMULATOR_REPLAYER_DATA_FILE
+from constants import SIMULATOR_USE_REPLAYER, API_URL_V2_TICKER
 from constants import TRADING_DEFAULT_CURRENCY_PAIR
 from simulator.logic import send_order, market_order, UserAccount
 from simulator.replayer import Replayer
 
 app = Flask(__name__)
 user = UserAccount()
-replayer = Replayer(data_file=SIMULATOR_REPLAYER_DATA_FILE)
+
+if SIMULATOR_USE_REPLAYER:
+    replayer = Replayer(data_file=SIMULATOR_REPLAYER_DATA_FILE)
+else:
+    replayer = None
 
 
 @app.errorhandler(404)
@@ -21,7 +27,8 @@ def page_not_found(err):
 def reset():
     global user, replayer
     user = UserAccount()
-    replayer.reset()
+    if replayer is not None:
+        replayer.reset()
     return 'Reset.'
 
 
@@ -44,7 +51,10 @@ def list_all_end_points():
 @app.route('/ticker/{}/'.format(TRADING_DEFAULT_CURRENCY_PAIR), methods=['GET', 'POST'], strict_slashes=False)
 @app.route('/v2/ticker/{}/'.format(TRADING_DEFAULT_CURRENCY_PAIR), methods=['GET', 'POST'], strict_slashes=False)
 def ticker():
-    return jsonify(replayer.next())
+    if SIMULATOR_USE_REPLAYER:
+        return jsonify(replayer.next())
+    else:
+        return jsonify(BitstampAPI.ticker(API_URL_V2_TICKER))
 
 
 @app.route('/balance/', methods=['GET', 'POST'], strict_slashes=False)

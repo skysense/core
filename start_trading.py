@@ -1,3 +1,4 @@
+import json
 import logging
 import os
 import threading
@@ -26,6 +27,7 @@ class Trading:
         self.order_passing = OrderPassingSystem(self.market_api, self.throttle)
         self.model_action_taker = ModelActionTaker(self.order_passing)
         self.model_data_recorder = ModelDataRecorder()
+        self.balance_tracking_file = os.path.join('log', 'balance_{0}.log'.format(datetime.now()))
 
         self.workers = [self.market_api]
 
@@ -55,6 +57,18 @@ class Trading:
                 self.logger.info('No trading action was taken on this price update.')
             else:
                 self.logger.info('Initiated an order: {0}'.format(trading_action))
+
+                # TODO:test it and improve it.
+                # sleep 3 seconds to make sure the order is fully executed.
+                # can be improved with .order_status()
+                # make sure it is executed.
+                sleep(3)
+                # update our balance.
+                with open(self.balance_tracking_file) as r:
+                    data = json.load(r)
+                data.update(self.market_api.account_balance())
+                with open(self.balance_tracking_file) as w:
+                    json.dump(obj=data, fp=w, indent=4)
 
     def notify(self, observable, *args, **kwargs):
         self.lock.acquire()

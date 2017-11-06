@@ -11,7 +11,12 @@ if not ADMIN_PROD_FLAG:
     SIMULATOR_REPLAYER_DATA_FILE = '../data_examples/btc_price_2017-09-13T03:45:28+00:00.csv'
     API_URL_V1 = 'http://127.0.0.1:5000/'
     API_URL_V2 = 'http://127.0.0.1:5000/v2/'
+    API_URL_V2_TICKER = 'https://www.bitstamp.net/api/v2/'
     TICKER_POLL_INTERVAL_SEC = 5
+
+    # True = simulator replays the file SIMULATOR_REPLAYER_DATA_FILE
+    # False = simulator connects to Bitstamp (API_URL_V2_TICKER) and calls ticker() to get RT market data.
+    SIMULATOR_USE_REPLAYER = False
 else:
     # Production. With Bitstamp.
     TRADING_MAX_NUMBER_OF_OUTSTANDING_ORDERS_ALLOWED = 1

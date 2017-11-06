@@ -1,6 +1,6 @@
-from . import calls
 from constants import API_URL_V1
 from constants import API_URL_V2
+from . import calls
 
 # Constants
 BUY_LIMIT_ORDER_TYPE_BUY = 0
@@ -35,6 +35,7 @@ WITHDRAWAL_REQUEST_STATUS_FINISHED = 2
 WITHDRAWAL_REQUEST_STATUS_CANCELLED = 3
 WITHDRAWAL_REQUEST_STATUS_FAILED = 4
 
+
 # API_URL_V1 = 'https://www.bitstamp.net/api/'
 # API_URL_V2 = 'https://www.bitstamp.net/api/v2/'
 
@@ -42,6 +43,7 @@ WITHDRAWAL_REQUEST_STATUS_FAILED = 4
 # API_URL_V2 = 'http://127.0.0.1:5000/v2/'
 
 # Wrapper functions
+
 
 def account_balance(client_id, api_key, api_secret):
     return (
@@ -112,8 +114,8 @@ def sell_limit_order(client_id, api_key, api_secret, amount, price):
     )
 
 
-def ticker():
-    return calls.APITickerCall().call(API_URL_V2)
+def ticker(end_point=API_URL_V2):
+    return calls.APITickerCall().call(end_point)
 
 
 def transactions(offset=0, limit=100, sort=TRANSACTIONS_SORT_DESCENDING):
