@@ -1,15 +1,12 @@
 import logging
-import logging
-import os
 import threading
-from datetime import datetime
 from time import sleep
 
 from connectivity.bitstamp_api import BitstampAPI
 from connectivity.order_passing_system import OrderPassingSystem
 from connectivity.throttling import Throttling
 from connectivity.throttling import ThrottlingException
-from constants import ADMIN_LOG_FORMAT, ADMIN_PROD_FLAG, MODEL_WARM_UP_PHASE_NUM_TICKS
+from constants import MODEL_WARM_UP_PHASE_NUM_TICKS
 from helpers.balance_recorder import BalanceRecorder
 from model.model import RandomCoinModel
 from model.model_action_taker import ModelActionTaker
@@ -29,6 +26,7 @@ class Trading:
         self.model_action_taker = ModelActionTaker(self.order_passing)
         self.model_data_recorder = ModelDataRecorder()
         self.balance_tracker = BalanceRecorder()
+        self.balance_tracker.update(self.market_api.account_balance())
 
         self.workers = [self.market_api]
 
@@ -107,21 +105,6 @@ class Trading:
 
 def run():
     print('Program has started.')
-    sleep(1)
-
-    if ADMIN_PROD_FLAG:
-
-        if input('Are you sure you want to run in production (Bitstamp.net)? (y/n) ') != 'y':
-            exit()
-
-        log_filename = os.path.join('log', 'trading_{0}.log'.format(datetime.now()))
-        print('Check the log file {0} if nothing is displayed in the console.'.format(log_filename))
-        logging.basicConfig(level=logging.INFO,
-                            format=ADMIN_LOG_FORMAT,
-                            filename=log_filename)
-    else:
-        logging.basicConfig(level=logging.INFO,
-                            format=ADMIN_LOG_FORMAT)
     trd = Trading()
     trd.run()
 
