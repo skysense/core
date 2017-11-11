@@ -29,8 +29,8 @@ class Saver:
 def last_checkpoint(load_path):
     checkpoints = glob(os.path.join(load_path, 'step-*'))
     p = re.compile('(.*step-[0-9]*)')
-    checkpoints = [p.search(f).group(1) for f in checkpoints]  # Filter out filename extensions.
-    checkpoints = sorted(checkpoints, key=lambda x: int(x.split('-')[-1]))  # Sort by increasing step number.
+    checkpoints = [p.search(f).group(1) for f in checkpoints]
+    checkpoints = sorted(checkpoints, key=lambda x: int(x.split('-')[-1]))
     return checkpoints[-1] if checkpoints else None
 
 
