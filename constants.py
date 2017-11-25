@@ -4,6 +4,10 @@ from datetime import datetime
 
 ADMIN_PROD_FLAG = False
 
+MODEL_CHECKPOINTS_DIR = 'model_checkpoints/'
+MODEL_INPUT_TENSOR_NAME = 'Input/ClosePrices'  # could be several in a very near future
+MODEL_OUTPUT_TENSOR_NAME = 'Output/Prediction'
+
 if not ADMIN_PROD_FLAG:
     # Simulation. With Localhost.
     TRADING_MAX_NUMBER_OF_OUTSTANDING_ORDERS_ALLOWED = 1
@@ -20,7 +24,7 @@ if not ADMIN_PROD_FLAG:
 
     # True = simulator replays the file SIMULATOR_REPLAYER_DATA_FILE
     # False = simulator connects to Bitstamp (API_URL_V2_TICKER) and calls ticker() to get RT market data.
-    SIMULATOR_USE_REPLAYER = False
+    SIMULATOR_USE_REPLAYER = True
 else:
     # Production. With Bitstamp.
     TRADING_MAX_NUMBER_OF_OUTSTANDING_ORDERS_ALLOWED = 1

@@ -8,7 +8,7 @@ from connectivity.throttling import Throttling
 from connectivity.throttling import ThrottlingException
 from constants import MODEL_WARM_UP_PHASE_NUM_TICKS
 from helpers.balance_recorder import BalanceRecorder
-from model.model import RandomCoinModel
+from model.model import TensorflowModel
 from model.model_action_taker import ModelActionTaker
 from model.model_data_recorder import ModelDataRecorder
 
@@ -17,8 +17,7 @@ class Trading:
     def __init__(self):
         self.logger = logging.getLogger('MainThread')
         self.lock = threading.Lock()
-        self.model_prices = RandomCoinModel()
-        self.model_news = RandomCoinModel()
+        self.model_prices = TensorflowModel()
         self.market_api = BitstampAPI()
         self.market_api.register_observer(self)
         self.throttle = Throttling()
