@@ -9,12 +9,7 @@ import tensorflow as tf
 import tensorflow.contrib.slim as slim
 from tensorflow.contrib.rnn.python.ops.rnn_cell import PhasedLSTMCell
 
-from model.model_helpers import stacked_lstm, ModelFileLogger
-
-
-def compute_returns(close_prices):
-    close_prices_returns = pd.DataFrame(100 * ((close_prices.shift(-1) - close_prices) / close_prices).fillna(0.0))
-    return close_prices_returns.shift(1).fillna(0)
+from model.model_helpers import stacked_lstm, ModelFileLogger, compute_returns
 
 
 def get_batch(bs, prices, sequence_length):
@@ -46,7 +41,8 @@ def run_training(lstm_cell, hidden_size, batch_size, steps, log_file=None):
     print(learning_rate)
     print(sequence_length)
 
-    file_logger = ModelFileLogger(log_file, ['step', 'testing_loss', 'benchmark_loss', 'running_difference', 'running_acc'])
+    file_logger = ModelFileLogger(log_file,
+                                  ['step', 'testing_loss', 'benchmark_loss', 'running_difference', 'running_acc'])
     x_ = tf.placeholder(tf.float32, (batch_size, sequence_length, 1))
     t_ = tf.placeholder(tf.float32, (batch_size, sequence_length, 1))
     y_ = tf.placeholder(tf.float32, (batch_size, 1))
