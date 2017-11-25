@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import tensorflow as tf
 from tensorflow.python.ops.rnn import dynamic_rnn
 
@@ -10,6 +11,15 @@ def stacked_lstm(cell_fn, input_tensor, num_cells, num_lstm_layers=1, return_onl
     if return_only_last_output:
         return tf.squeeze(x[:, -1, :])
     return x
+
+
+def compute_returns(close_prices):
+    returns = pd.DataFrame(close_prices)
+    returns.columns = ['prices']
+    returns['prices shift'] = close_prices.shift(1)
+    returns['returns'] = (returns['prices'] / returns['prices shift'] - 1) * 100  # percentage.
+    returns.fillna(0.0, inplace=True)
+    return returns['returns']
 
 
 class ModelFileLogger:
