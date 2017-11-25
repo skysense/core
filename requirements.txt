@@ -6,3 +6,4 @@ Flask==0.12.2
 requests==2.18.3
 tqdm==4.19.2
 feedparser==5.2.1
+git+https://github.com/philipperemy/tf-easy-model-saving.git
