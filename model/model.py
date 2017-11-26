@@ -1,8 +1,10 @@
 import abc
+from glob import glob
 
 import numpy as np
 import tensorflow as tf
 from easy_model_saving import model_saver
+from natsort import natsorted
 
 from constants import MODEL_CHECKPOINTS_DIR, MODEL_INPUT_TENSOR_NAME, MODEL_OUTPUT_TENSOR_NAME
 from model.model_helpers import ModelOutput
@@ -21,17 +23,19 @@ class TensorflowModel(Model):
     def __init__(self):
         super().__init__()
         self.sess = tf.Session()
-        with self.sess:
-            last_step = model_saver.restore_graph_variables(MODEL_CHECKPOINTS_DIR)
+        # TODO: add it in model_saver
+        meta_files = sorted(glob('model/' + MODEL_CHECKPOINTS_DIR + '/**/*.meta', recursive=True))
+        tf.train.import_meta_graph(meta_files[-1])
+        last_step = model_saver.restore_graph_variables('model/' + MODEL_CHECKPOINTS_DIR, sess=self.sess)
         assert last_step != 0, 'No checkpoints have been found. Please train a model first.'
-        self.output_tensor = model_saver.get_tensor_by_name(MODEL_OUTPUT_TENSOR_NAME)
         self.input_tensor = model_saver.get_tensor_by_name(MODEL_INPUT_TENSOR_NAME)
+        self.output_tensor = model_saver.get_tensor_by_name(MODEL_OUTPUT_TENSOR_NAME)
 
     def call(self, *args, **kwargs):
         close_prices = args[0]['last'].values.astype(np.float)
-        feed_dict = {self.input_tensor: close_prices}
+        feed_dict = {self.input_tensor: np.expand_dims([close_prices[-1]], axis=0)}
         out = self.sess.run(self.output_tensor, feed_dict=feed_dict)
-        buy, sell, hold = out
+        buy, sell, hold = out.flatten()
         return ModelOutput(buy_confidence=buy, sell_confidence=sell, hold_confidence=hold)
 
 
