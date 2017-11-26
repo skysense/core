@@ -21,6 +21,29 @@ def compute_returns(close_prices):
     returns.fillna(0.0, inplace=True)
     return returns['returns']
 
+def split_prices(prices, ratio=[0.7, 0.2, 0.1]):
+    n = prices.shape[0]
+    n_train = int(np.floor(n*ratio[0]))
+    n_cv = int(np.floor(n*ratio[1]))
+    prices_train = prices.iloc[:n_train, :]
+    prices_cv = prices.iloc[n_train:n_train + n_cv, :]
+    prices_test = prices.iloc[n_train + n_cv:, :]
+    return prices_train, prices_cv, prices_test
+
+def get_batch(batch_size, prices, sequence_length):
+    batch_x = []
+    batch_t = []
+    batch_y = []
+    for jj in range(batch_size):
+        start = np.random.choice(range(len(prices) - sequence_length - 1))
+        values = prices[start: start + sequence_length + 1].values
+        x = np.array(values[0:-1, 1], dtype=float)
+        y = np.array(values[-1, 1], dtype=float)
+        t = np.array(values[0:-1, 0], dtype=float)
+        batch_x.append(x)
+        batch_t.append(t)
+        batch_y.append(y)
+    return np.expand_dims(batch_x, axis=2), np.expand_dims(batch_t, axis=2), np.expand_dims(batch_y, axis=1)
 
 class ModelFileLogger:
     def __init__(self, full_filename, headers):
