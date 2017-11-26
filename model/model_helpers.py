@@ -28,5 +28,3 @@ class ModelFileLogger:
         arr = [str(e) for e in arr]
         self._out_fp.write(' '.join(arr) + '\n')
         self._out_fp.flush()
-
-
