@@ -8,8 +8,9 @@ import tensorflow as tf
 import tensorflow.contrib.slim as slim
 from tensorflow.contrib.rnn.python.ops.rnn_cell import PhasedLSTMCell
 
+from helpers.utils import compute_returns
 from model.model import Model
-from model.model_helpers import stacked_lstm, ModelFileLogger, compute_returns
+from model.model_helpers import stacked_lstm, ModelFileLogger
 
 
 class Model1(Model):

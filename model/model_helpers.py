@@ -1,5 +1,3 @@
-import numpy as np
-import pandas as pd
 import tensorflow as tf
 from tensorflow.python.ops.rnn import dynamic_rnn
 
@@ -11,15 +9,6 @@ def stacked_lstm(cell_fn, input_tensor, num_cells, num_lstm_layers=1, return_onl
     if return_only_last_output:
         return tf.squeeze(x[:, -1, :])
     return x
-
-
-def compute_returns(close_prices):
-    returns = pd.DataFrame(close_prices)
-    returns.columns = ['prices']
-    returns['prices shift'] = close_prices.shift(1)
-    returns['returns'] = (returns['prices'] / returns['prices shift'] - 1) * 100  # percentage.
-    returns.fillna(0.0, inplace=True)
-    return returns['returns']
 
 
 class ModelFileLogger:
@@ -41,17 +30,3 @@ class ModelFileLogger:
         self._out_fp.flush()
 
 
-class ModelOutput:
-    def __init__(self, buy_confidence, sell_confidence, hold_confidence):
-        self.buy_confidence = float(buy_confidence)
-        self.sell_confidence = float(sell_confidence)
-        self.hold_confidence = float(hold_confidence)
-        if np.abs(self.buy_confidence + self.sell_confidence + self.hold_confidence - 1) > 1e-5:
-            raise Exception('buy, sell and hold confidence do not add up to 1.')
-
-    def __str__(self):
-        return '[buy_confidence = {0:.3f}, ' \
-               'sell_confidence = {1:.3f}, ' \
-               'hold_confidence = {2:.3f}]'.format(self.buy_confidence,
-                                                   self.sell_confidence,
-                                                   self.hold_confidence)

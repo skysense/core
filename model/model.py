@@ -6,7 +6,6 @@ import tensorflow as tf
 from easy_model_saving import model_saver
 
 from constants import MODEL_CHECKPOINTS_DIR, MODEL_INPUT_TENSOR_NAME, MODEL_OUTPUT_TENSOR_NAME
-from model.model_helpers import ModelOutput
 
 
 class Model:
@@ -57,3 +56,19 @@ class RandomCoinModel(Model):
         # Toy model!
         buy, sell, hold = np.random.dirichlet(np.ones(3))
         return ModelOutput(buy_confidence=buy, sell_confidence=sell, hold_confidence=hold)
+
+
+class ModelOutput:
+    def __init__(self, buy_confidence, sell_confidence, hold_confidence):
+        self.buy_confidence = float(buy_confidence)
+        self.sell_confidence = float(sell_confidence)
+        self.hold_confidence = float(hold_confidence)
+        if np.abs(self.buy_confidence + self.sell_confidence + self.hold_confidence - 1) > 1e-5:
+            raise Exception('buy, sell and hold confidence do not add up to 1.')
+
+    def __str__(self):
+        return '[buy_confidence = {0:.3f}, ' \
+               'sell_confidence = {1:.3f}, ' \
+               'hold_confidence = {2:.3f}]'.format(self.buy_confidence,
+                                                   self.sell_confidence,
+                                                   self.hold_confidence)

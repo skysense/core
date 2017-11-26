@@ -9,7 +9,8 @@ import tensorflow as tf
 import tensorflow.contrib.slim as slim
 from tensorflow.contrib.rnn.python.ops.rnn_cell import PhasedLSTMCell
 
-from model.model_helpers import stacked_lstm, ModelFileLogger, compute_returns
+from helpers.utils import compute_returns
+from model.model_helpers import stacked_lstm, ModelFileLogger
 
 
 def get_batch(bs, prices, sequence_length):
