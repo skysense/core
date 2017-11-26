@@ -31,6 +31,9 @@ class Model2(Model):
         print(self.learning_rate)
         print(self.sequence_length)
 
+        tf.set_random_seed(1)
+        np.random.seed(1)
+
         self.file_logger = ModelFileLogger(self.log_file,
                                            ['step', 'testing_loss', 'benchmark_loss',
                                             'running_difference', 'running_acc'])
