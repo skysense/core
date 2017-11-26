@@ -34,7 +34,7 @@ def run_training(lstm_cell, hidden_size, batch_size, steps, log_file=None):
 
     # MODEL PART #######################
     sequence_length = 20  # for now let's do like this.
-    learning_rate = 1e-7
+    learning_rate = 5e-6
     print(hidden_size)
     print(batch_size)
     print(steps)
@@ -75,7 +75,9 @@ def run_training(lstm_cell, hidden_size, batch_size, steps, log_file=None):
     benchmark_loss = 100 * tf.reduce_mean(tf.abs(y_))
     train_step = tf.train.AdamOptimizer(learning_rate).minimize(loss)  # clip please.
 
-    sess = tf.Session(config=tf.ConfigProto(log_device_placement=False))
+    config = config=tf.ConfigProto(log_device_placement=False)
+    config.gpu_options.per_process_gpu_memory_fraction = 0.97 # because ubuntu desktop uses gpu for xorgs etc
+    sess = tf.Session(config=config)
     sess.run(tf.global_variables_initializer())
 
     # DATA PART #######################
@@ -108,7 +110,7 @@ def run_training(lstm_cell, hidden_size, batch_size, steps, log_file=None):
 
 def main():
     model_class, log_file = get_parameters()
-    run_training(lstm_cell=model_class, hidden_size=1024, batch_size=32, steps=10000, log_file=log_file)
+    run_training(lstm_cell=model_class, hidden_size=1024, batch_size=128, steps=1000, log_file=log_file)
 
 
 def get_parameters():
