@@ -20,7 +20,7 @@ def arg_parse():
 HEADERS = ['high', 'last', 'timestamp', 'bid', 'vwap', 'volume', 'low', 'ask', 'open']
 
 np.set_printoptions(threshold=np.nan)
-pd.set_option('display.height', 1000)
+pd.set_option('display.height', 1000) # height has been deprecated
 pd.set_option('display.max_rows', 500)
 pd.set_option('display.max_columns', 500)
 pd.set_option('display.width', 1000)
@@ -43,7 +43,11 @@ def clean_data(data_dir, output_file):
             print('Problem with filename [{}].'.format(filename))
 
     if len(np_data) == 0:
-        raise Exception('No data available in {}'.format(data_dir))
+        d = pd.read_csv('./data_examples/btc_price_2017-09-13T03:45:28+00:00.csv')
+        print('No data available in {}'.format(data_dir))
+        print('Using Data Examples')
+        return d
+        # raise Exception('No data available in {}'.format(data_dir))
 
     np_data = np.array(np_data)
     d = pd.DataFrame(np_data, index=np_data[:, 2])
