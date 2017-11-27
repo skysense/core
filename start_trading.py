@@ -38,7 +38,7 @@ class Trading:
         data = self.model_data_recorder.get_data_frame()
 
         if len(data) < MODEL_WARM_UP_PHASE_NUM_TICKS:
-            self.logger.warn('Warming up. ({0}/{1}) ticker updates received. Calling models soon.'.format(
+            self.logger.error('Warming up. ({0}/{1}) ticker updates received. Calling models soon.'.format(
                 len(data), MODEL_WARM_UP_PHASE_NUM_TICKS))
         else:
             model_output = self.model_prices.call(data)

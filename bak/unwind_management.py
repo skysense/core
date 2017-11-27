@@ -37,7 +37,6 @@ class UnwindManager(SingletonObservable):
             if str(last_transaction['type']) == str(USER_TRANSACTIONS_TYPE_MARKET_TRADE):
                 pass
 
-
                 # for order in orders:
                 #     if order['status']['market trade'] == 'market trade' and order['status']['status'] == 'Finished':
                 #         ts = datetime.strptime(order['timestamp'], '%Y-%m-%d %H:%M:%S.%f')

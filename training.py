@@ -76,8 +76,8 @@ def run_training(lstm_cell, hidden_size, batch_size, steps, log_file=None):
     benchmark_loss = 100 * tf.reduce_mean(tf.abs(y_))
     train_step = tf.train.AdamOptimizer(learning_rate).minimize(loss)  # clip please.
 
-    config = config=tf.ConfigProto(log_device_placement=False)
-    config.gpu_options.per_process_gpu_memory_fraction = 0.97 # because ubuntu desktop uses gpu for xorgs etc
+    config = tf.ConfigProto(log_device_placement=False)
+    config.gpu_options.per_process_gpu_memory_fraction = 0.97  # because ubuntu desktop uses gpu for xorgs etc
     sess = tf.Session(config=config)
     sess.run(tf.global_variables_initializer())
 

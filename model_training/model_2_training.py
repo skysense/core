@@ -92,7 +92,7 @@ class Model2(Model):
         running_difference_cv = deque(maxlen=100)
         running_accuracy_cv = deque(maxlen=100)
 
-        tscv = TimeSeriesSplit(max_train_size=None, n_splits=self.steps)
+        tscv = TimeSeriesSplit(n_splits=self.steps)
 
         for i, (train_index, cv_index) in enumerate(tscv.split(prices_train)):
             prices_train_fold = prices_train.iloc[train_index, :]

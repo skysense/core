@@ -25,5 +25,4 @@ def run(balance_file):
 
 
 if __name__ == '__main__':
-    arg_p = arg_parse().parse_args(sys.argv[1:])
-    run(arg_p.balance_file)
+    run(arg_parse().parse_args(sys.argv[1:]).balance_file)
