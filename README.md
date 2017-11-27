@@ -55,17 +55,17 @@ In this section, we're going to see how:
 - to train a model from scratch
 - the correct format and conventions to make a nice interoperability with the inference part.
 
-Start a training is actually very simple. Here's how to start it for the dummy model (model_0):
+Starting a training is actually very simple. Here's how to start it for the dummy model (model_0):
 
 ```
-rm -rf dummy_checkpoints/*
+rm -rf dummy_checkpoints/* # let's clean the dummy weights.
 python3 model_training/model_0_training.py
 ls -l dummy_checkpoints # should contain some files!
 ```
 
-Those weights are in the right format for inference.
+Training is totally independent of inference. The only interface are the weights themselves.
 
-The inference task expects two main things:
+The inference task expects two main things.
 
 - a specific naming to retrieve the nodes easily:
 
@@ -74,7 +74,7 @@ MODEL_INPUT_TENSOR_NAME = 'Input/ClosePrices'
 MODEL_OUTPUT_TENSOR_NAME = 'Output/Prediction'
 ```
 
-- 3 outputs for the output node (should be `buy`, `hold` and `sell` confidence and they should add up to 1).
+- 3 outputs for the output node (should be `buy`, `hold` and `sell` confidences and they should add up to 1).
 
 A simple model graph filling all those requirements are:
 
@@ -83,15 +83,15 @@ import tensorflow as tf
 import tensorflow.contrib.slim as slim
 from easy_model_saving import model_saver
 
-input_close_prices = tf.placeholder(tf.float32, shape=[None, 1], name=MODEL_INPUT_TENSOR_NAME)
+input_close_prices = tf.placeholder(tf.float32, shape=[None, 1], name=MODEL_INPUT_TENSOR_NAME) # here the name is important.
 m = slim.fully_connected(inputs=input_close_prices, num_outputs=20, activation_fn=tf.nn.relu)
-softmax_output = slim.fully_connected(inputs=m, num_outputs=3, activation_fn=tf.nn.softmax)
-tf.identity(softmax_output, name=MODEL_OUTPUT_TENSOR_NAME)
+softmax_output = slim.fully_connected(inputs=m, num_outputs=3, activation_fn=tf.nn.softmax) # here the num_outputs=3 is important.
+tf.identity(softmax_output, name=MODEL_OUTPUT_TENSOR_NAME) # here the name is important.
 ```
 
 `[None, 1]` will be updated to `[None, sequence_length]` where `sequence_length` is the lookback window of the LSTM model.
 
-A simple training procedure looks like this:
+A very simple training procedure should look like this:
 
 ```
 import tensorflow as tf
@@ -109,6 +109,6 @@ def run_dummy_training():
         assert last_step != 0
 ```
 
-All those snippets are from `model_training/model_0_training.py`.
+All those snippets in this section are from `model_training/model_0_training.py`.
 
 That's it!
