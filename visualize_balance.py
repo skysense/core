@@ -7,7 +7,7 @@ import pandas as pd
 
 def arg_parse():
     arg_p = ArgumentParser()
-    arg_p.add_argument('--balance_file', type=str)  # in log/
+    arg_p.add_argument('--balance_file', type=str, required=True)  # in log/
     return arg_p
 
 
