@@ -5,7 +5,7 @@ from datetime import datetime
 ADMIN_PROD_FLAG = False
 
 MODEL_CHECKPOINTS_DIR = 'dummy_checkpoints'
-MODEL_INPUT_TENSOR_NAME = 'Input/ClosePrices'  # could be several in a very near future
+MODEL_INPUT_TENSOR_NAME = 'Input/ClosePrices'  # could have several inputs in a very near future
 MODEL_OUTPUT_TENSOR_NAME = 'Output/Prediction'
 
 if not ADMIN_PROD_FLAG:

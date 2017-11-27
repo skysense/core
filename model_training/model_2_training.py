@@ -10,7 +10,8 @@ from sklearn.model_selection import TimeSeriesSplit
 from tensorflow.contrib.rnn.python.ops.rnn_cell import PhasedLSTMCell
 
 from model.model import Model
-from model.model_helpers import stacked_lstm, ModelFileLogger, compute_returns, split_prices, get_batch
+from model.model_helpers import stacked_lstm, ModelFileLogger, split_prices, get_batch
+from helpers.utils import compute_returns
 
 
 class Model2(Model):
