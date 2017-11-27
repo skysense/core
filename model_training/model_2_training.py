@@ -6,8 +6,8 @@ import numpy as np
 import pandas as pd
 import tensorflow as tf
 import tensorflow.contrib.slim as slim
-from tensorflow.contrib.rnn.python.ops.rnn_cell import PhasedLSTMCell
 from sklearn.model_selection import TimeSeriesSplit
+from tensorflow.contrib.rnn.python.ops.rnn_cell import PhasedLSTMCell
 
 from model.model import Model
 from model.model_helpers import stacked_lstm, ModelFileLogger, compute_returns, split_prices, get_batch
@@ -69,12 +69,10 @@ class Model2(Model):
         self.benchmark_loss = 100 * tf.reduce_mean(tf.abs(self.y_))
         self.train_step = tf.train.AdamOptimizer(self.learning_rate).minimize(self.loss)  # clip please.
 
-        config=tf.ConfigProto(log_device_placement=False)
-        config.gpu_options.per_process_gpu_memory_fraction = 0.97 # because ubuntu desktop uses gpu for xorgs etc
+        config = tf.ConfigProto(log_device_placement=False)
+        config.gpu_options.per_process_gpu_memory_fraction = 0.97  # because ubuntu desktop uses gpu for xorgs etc
         self.sess = tf.Session(config=config)
         self.sess.run(tf.global_variables_initializer())
-
-
 
     def train(self, replay_file=os.path.join('data_examples', 'btc_price_2017-09-13T03:45:28+00:00.csv')):
         # DATA PART #######################
@@ -104,9 +102,9 @@ class Model2(Model):
             x_train, t_train, y_train = get_batch(self.batch_size, prices_train_fold, self.sequence_length)
             st = time()
             _, te_loss_tr, be_loss_tr = self.sess.run([self.train_step, self.loss, self.benchmark_loss],
-                                             feed_dict={self.x_: x_train,
-                                                        self.y_: y_train,
-                                                        self.t_: t_train})  # gradient update.
+                                                      feed_dict={self.x_: x_train,
+                                                                 self.y_: y_train,
+                                                                 self.t_: t_train})  # gradient update.
 
             running_difference_tr.append(be_loss_tr - te_loss_tr)
             running_accuracy_tr.append(te_loss_tr < be_loss_tr)
@@ -114,7 +112,8 @@ class Model2(Model):
                 'steps = {0} | time {1:.3f} | te_loss_tr = {2:.6f}, be_loss_tr = {3:.6f}, r_diff_tr = {4:.6f}, r_acc_tr = {5:.3f}'.format(
                     str(i).zfill(6), time() - st, te_loss_tr, be_loss_tr, np.mean(running_difference_tr),
                     np.mean(running_accuracy_tr)))
-            self.file_logger.write([i, te_loss_tr, be_loss_tr, np.mean(running_difference_tr), np.mean(running_accuracy_tr)])
+            self.file_logger.write(
+                [i, te_loss_tr, be_loss_tr, np.mean(running_difference_tr), np.mean(running_accuracy_tr)])
 
             # cross validation after gradient update step
             x_test, t_test, y_test = get_batch(self.batch_size, prices_cv_fold, self.sequence_length)

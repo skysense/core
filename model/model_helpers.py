@@ -1,5 +1,4 @@
 import numpy as np
-import pandas as pd
 import tensorflow as tf
 from tensorflow.python.ops.rnn import dynamic_rnn
 
@@ -13,19 +12,10 @@ def stacked_lstm(cell_fn, input_tensor, num_cells, num_lstm_layers=1, return_onl
     return x
 
 
-def compute_returns(close_prices):
-    returns = pd.DataFrame(close_prices)
-    returns.columns = ['prices']
-    returns['prices shift'] = close_prices.shift(1)
-    returns['returns'] = (returns['prices'] / returns['prices shift'] - 1) * 100  # percentage.
-    returns.fillna(0.0, inplace=True)
-    return returns['returns']
-
-
 def split_prices(prices, ratio=np.array([0.7, 0.2, 0.1])):
     n = prices.shape[0]
-    n_train = int(np.floor(n*ratio[0]))
-    n_cv = int(np.floor(n*ratio[1]))
+    n_train = int(np.floor(n * ratio[0]))
+    n_cv = int(np.floor(n * ratio[1]))
     prices_train = prices.iloc[:n_train, :]
     prices_cv = prices.iloc[n_train:n_train + n_cv, :]
     prices_test = prices.iloc[n_train + n_cv:, :]
