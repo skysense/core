@@ -9,3 +9,4 @@ feedparser>=5.2.1
 git+https://github.com/philipperemy/tf-easy-model-saving.git
 jupyter>=1.0.0
 scikit-learn>=0.19.1
+scipy
