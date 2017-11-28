@@ -6,7 +6,7 @@ Flask>=0.12.2
 requests>=2.18.3
 tqdm>=4.19.2
 feedparser>=5.2.1
-git+https://github.com/philipperemy/tf-easy-model-saving.git
+git+https://github.com/philipperemy/tf-easy-model-saving.git@4c46d2ba42d0c8d27c4a6c647c2c23899dd2a233
 jupyter>=1.0.0
 scikit-learn>=0.19.1
 scipy
