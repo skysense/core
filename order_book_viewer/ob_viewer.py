@@ -8,6 +8,8 @@ from natsort import natsorted
 # ORDER_BOOK_FILENAME = '../data_examples/ob_btc_price_12_15_2017/ob_btc_price_12_15_2017-12:36:28.csv'
 ORDER_BOOK_FILENAME = '../data_examples/ob_btc_price_12_15_2017/ob.csv'
 
+MIDPOINT_PREDICTION_STEPS = 10
+
 pd.set_option('display.max_rows', None)
 pd.set_option('display.max_columns', None)
 pd.set_option('display.width', 100000)
@@ -17,6 +19,16 @@ def view():
     if not os.path.isfile(ORDER_BOOK_FILENAME):
         print('Could not find the order book filename.')
     ob = pd.read_csv(ORDER_BOOK_FILENAME)
+
+    ob['midpoint'] = 0.5 * ob['bid_price_level_0'] + 0.5 * ob['ask_price_level_0']
+
+    ob['midpoint_to_predict'] = ob['midpoint'].shift(-MIDPOINT_PREDICTION_STEPS)
+    ob.fillna(0.0, inplace=True)
+
+    ob['price_direction'] = ob['midpoint_to_predict'] > ob['midpoint']
+    ob['price_direction'] = ob['price_direction'].astype(np.int)
+    print(ob.head(100))
+    # exit(1)
 
     price_columns = natsorted(list(filter(lambda x: 'price' in x, list(ob.columns))))
     bid_price_columns = natsorted(list(filter(lambda x: 'bid' in x, list(price_columns))), reverse=True)
@@ -50,11 +62,12 @@ def view():
 
     date_times = ob['DateTime_UTC'].values
     for i in range(10000):
+        price_direction = 'BULLISH' if ob['price_direction'][i:i + 1].values.flatten() == 1 else 'BEARISH'
         current_price = prices[i:i + 1].values.flatten()
         current_quantity = qty[i:i + 1].values.flatten()
         bid_sum_qty = '{0:.2f}'.format(np.sum(current_quantity[:20]))
         ask_sum_qty = '{0:.2f}'.format(np.sum(current_quantity[20:]))
-        plt.title(date_times[i] + ' - BID: {0} / ASK: {1}'.format(bid_sum_qty, ask_sum_qty))
+        plt.title(date_times[i] + ' - BID: {0} / ASK: {1}, DIR = {2}'.format(bid_sum_qty, ask_sum_qty, price_direction))
         axes.bar(current_price, current_quantity, color=['lime'] * 20 + ['red'] * 20)
         # plt.bar(current_price, current_quantity, color=['lime'] * 20 + ['red'] * 20)
         plt.draw()
