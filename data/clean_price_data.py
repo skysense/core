@@ -40,25 +40,18 @@ def clean_data(data_dir, output_file):
         except:
             print('Problem with filename [{}].'.format(filename))
 
-    if len(np_data) == 0:
-        d = pd.read_csv('./data_examples/btc_price_2017-09-13T03:45:28+00:00.csv')
-        print('No data available in {}'.format(data_dir))
-        print('Using Data Examples')
-        return d
-        # raise Exception('No data available in {}'.format(data_dir))
-
     np_data = np.array(np_data)
     d = pd.DataFrame(np_data, index=np_data[:, 2])
     d.columns = HEADERS
     d.index = d.index.map(lambda ts: datetime.datetime.fromtimestamp(int(ts)))
+    d.index.names = ['DateTime_UTC']
+    d.to_csv(output_file + '.raw')
     print('Data set has {} rows.'.format(len(d)))
     d.drop_duplicates(inplace=True)
     print('Removing duplicates...')
     print('Data set has {} rows.'.format(len(d)))
-    d.index.names = ['DateTime_UTC']
     d.to_csv(output_file)
     print(d)
-    return d
 
 
 def run(arg_p):
